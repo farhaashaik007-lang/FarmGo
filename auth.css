@@ -1,0 +1,186 @@
+/* FarmGo Authentication & Shared UI Styles */
+
+:root {
+    --color-primary: #1B4332;
+    --color-primary-light: #2D6A4F;
+    --color-primary-dark: #081C15;
+    --color-accent: #D4A017;
+    --color-accent-light: #E8B84B;
+    --color-forest: #52B788;
+    --color-leaf: #40916C;
+    --color-dark-900: #0B0F0E;
+    --color-dark-800: #111916;
+    --color-dark-700: #1A2520;
+    --color-dark-600: #243530;
+}
+
+/* Glassmorphism Classes */
+.auth-glass {
+    background: rgba(17, 25, 22, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(82, 183, 136, 0.18);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.auth-glass-card {
+    background: rgba(26, 37, 32, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(82, 183, 136, 0.15);
+}
+
+.auth-glass-input {
+    background: rgba(11, 15, 14, 0.7);
+    border: 1px solid rgba(82, 183, 136, 0.2);
+    color: #ffffff;
+    transition: all 0.25s ease;
+}
+
+.auth-glass-input:focus {
+    border-color: #52B788 !important;
+    background: rgba(17, 25, 22, 0.95);
+    box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2), 0 0 20px rgba(82, 183, 136, 0.1);
+    outline: none;
+}
+
+/* Form Controls & Labels */
+.auth-label {
+    display: block;
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-bottom: 0.4rem;
+}
+
+.auth-label span.required {
+    color: #f87171;
+    margin-left: 2px;
+}
+
+/* Role Selector Pill Cards */
+.role-card {
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(82, 183, 136, 0.15);
+    background: rgba(17, 25, 22, 0.5);
+    position: relative;
+    user-select: none;
+}
+
+.role-card:hover {
+    border-color: rgba(82, 183, 136, 0.4);
+    background: rgba(27, 67, 50, 0.3);
+    transform: translateY(-2px);
+}
+
+.role-card.active {
+    border-color: #D4A017;
+    background: rgba(212, 160, 23, 0.12);
+    box-shadow: 0 0 20px rgba(212, 160, 23, 0.15);
+}
+
+.role-card.active .role-radio {
+    border-color: #D4A017;
+    background-color: #D4A017;
+}
+
+.role-radio {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(156, 163, 175, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* Password Strength Meter */
+.strength-bar {
+    height: 4px;
+    border-radius: 2px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-weak {
+    width: 28%;
+    background-color: #ef4444;
+}
+
+.strength-medium {
+    width: 65%;
+    background-color: #f59e0b;
+}
+
+.strength-strong {
+    width: 100%;
+    background-color: #10b981;
+}
+
+/* Social Buttons */
+.auth-social-btn {
+    transition: all 0.25s ease;
+    border: 1px solid rgba(82, 183, 136, 0.2);
+    background: rgba(17, 25, 22, 0.6);
+}
+
+.auth-social-btn:hover {
+    border-color: rgba(212, 160, 23, 0.4);
+    background: rgba(27, 67, 50, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Quick Demo Badges */
+.demo-badge {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px dashed rgba(212, 160, 23, 0.4);
+    background: rgba(212, 160, 23, 0.08);
+}
+
+.demo-badge:hover {
+    background: rgba(212, 160, 23, 0.2);
+    border-color: #D4A017;
+    transform: scale(1.02);
+}
+
+/* User Profile Nav Dropdown */
+.user-dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(82, 183, 136, 0.15);
+}
+
+.user-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* OTP inputs */
+.otp-digit-input {
+    width: 48px;
+    height: 54px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 12px;
+}
+
+/* Animations */
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 0 25px rgba(212, 160, 23, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 45px rgba(212, 160, 23, 0.45);
+    }
+}
+
+.auth-hero-glow {
+    animation: glowPulse 4s ease-in-out infinite;
+}

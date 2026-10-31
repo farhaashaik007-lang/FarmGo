@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to FarmGo - Access your tractor rentals, manage fleet equipment, track bookings and agricultural machinery across India.">
+    <title>Sign In — FarmGo | Smart Tractor & Ag Machinery Rentals</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom Auth Styles -->
+    <link rel="stylesheet" href="auth.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1B4332',
+                        primaryLight: '#2D6A4F',
+                        primaryDark: '#081C15',
+                        accent: '#D4A017',
+                        accentLight: '#E8B84B',
+                        earth: '#8B6914',
+                        soil: '#3E2723',
+                        wheat: '#F5DEB3',
+                        leaf: '#40916C',
+                        forest: '#52B788',
+                        dark: { 900: '#0B0F0E', 800: '#111916', 700: '#1A2520', 600: '#243530' }
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0B0F0E; color: #fff; overflow-x: hidden; min-height: 100vh; }
+        
+        .field-pattern { 
+            background-image: repeating-linear-gradient(90deg, rgba(45,106,79,0.03) 0px, rgba(45,106,79,0.03) 1px, transparent 1px, transparent 60px); 
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, #D4A017, #B8860B); 
+            position: relative; 
+            overflow: hidden; 
+            transition: all 0.3s ease;
+        }
+        .btn-primary::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: -100%; 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); 
+            transition: left 0.5s; 
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 25px rgba(212,160,23,0.35); 
+        }
+
+        .glass { 
+            background: rgba(27,67,50,0.15); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(45,106,79,0.2); 
+        }
+
+        .toast { 
+            transform: translateX(120%); 
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); 
+        }
+        .toast.show { transform: translateX(0); }
+    </style>
+</head>
+<body class="field-pattern relative flex flex-col justify-between">
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3"></div>
+
+    <!-- Background Ambient Glows -->
+    <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-primaryLight/15 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-0 right-1/4 w-[450px] h-[450px] bg-accent/10 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="w-full border-b border-primaryLight/15 bg-primaryDark/60 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-earth flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <span class="iconify text-primaryDark text-2xl" data-icon="mdi:tractor-variant"></span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight">Farm<span class="text-accent">Go</span></span>
+                    <span class="text-[10px] uppercase tracking-wider text-forest font-medium -mt-1">Agri Rental Hub</span>
+                </div>
+            </a>
+
+            <!-- Right Nav Links -->
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-sm text-gray-300 hover:text-white flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+                    <span class="iconify" data-icon="mdi:arrow-left"></span>
+                    <span>Back to Home</span>
+                </a>
+                <a href="signup.html" class="text-sm font-medium text-accent hover:text-accentLight border border-accent/30 hover:border-accent px-4 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                    <span class="iconify" data-icon="mdi:account-plus-outline"></span>
+                    <span>Sign Up</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Auth Content Section -->
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-10 w-full flex items-center">
+        <div class="grid lg:grid-cols-12 gap-12 items-center w-full">
+            
+            <!-- Left Column: Branding Showcase & Benefits (Hidden on mobile) -->
+            <div class="hidden lg:flex lg:col-span-6 flex-col justify-center space-y-8 pr-6">
+                
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-forest/10 border border-forest/30 text-forest text-xs font-semibold w-max">
+                    <span class="iconify text-base" data-icon="mdi:shield-check"></span>
+                    <span>India's Most Trusted Agri-Equipment Network</span>
+                </div>
+
+                <!-- Main Pitch -->
+                <div class="space-y-3">
+                    <h1 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-tight">
+                        Powering Modern <br/>
+                        <span class="bg-gradient-to-r from-forest via-accent to-wheat bg-clip-text text-transparent">Agriculture On-Demand</span>
+                    </h1>
+                    <p class="text-gray-400 text-base leading-relaxed">
+                        Sign in to reserve premium high-horsepower tractors, track active field operations, coordinate driver dispatch, and manage equipment earnings.
+                    </p>
+                </div>
+
+                <!-- Feature Bullets -->
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-xl bg-forest/15 border border-forest/30 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="iconify text-forest text-xl" data-icon="mdi:tractor"></span>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-semibold text-white">500+ Verified Tractors & Implements</h2>
+                            <p class="text-xs text-gray-400">Mahindra, John Deere, Swaraj & Kubota models available 24/7 across 50+ farming districts.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="iconify text-accent text-xl" data-icon="mdi:clock-fast"></span>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-semibold text-white">Zero Paperwork, Instant Field Delivery</h2>
+                            <p class="text-xs text-gray-400">Book in under 2 minutes. Transparent hourly or per-acre billing with GPS live monitoring.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-xl bg-primaryLight/25 border border-primaryLight/40 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="iconify text-forest text-xl" data-icon="mdi:wrench-check"></span>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-semibold text-white">Guaranteed Mechanic Support</h2>
+                            <p class="text-xs text-gray-400">Every machine is serviced and inspected. Free on-site mechanic dispatch within 45 minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Farmer Testimonial Card -->
+                <div class="auth-glass-card rounded-2xl p-5 border border-primaryLight/20 relative overflow-hidden">
+                    <div class="flex items-center gap-1 text-accent mb-2">
+                        <span class="iconify" data-icon="mdi:star"></span>
+                        <span class="iconify" data-icon="mdi:star"></span>
+                        <span class="iconify" data-icon="mdi:star"></span>
+                        <span class="iconify" data-icon="mdi:star"></span>
+                        <span class="iconify" data-icon="mdi:star"></span>
+                        <span class="text-xs text-gray-400 ml-2 font-medium">Verified Rental Review</span>
+                    </div>
+                    <p class="text-sm text-gray-300 italic mb-4 leading-relaxed">
+                        "During the wheat harvest rush, our local tractor broke down. Through FarmGo, a 55 HP John Deere arrived at our farm in 40 minutes. We saved our entire crop on time."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=100&auto=format&fit=crop&q=80" alt="Harpreet Singh" class="w-10 h-10 rounded-full object-cover border border-forest/40">
+                        <div>
+                            <div class="text-xs font-bold text-white">Harpreet Singh Dhillon</div>
+                            <div class="text-[11px] text-gray-400">Wheat & Paddy Cultivator • Karnal, Haryana</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Authentication Card -->
+            <div class="col-span-12 lg:col-span-6 max-w-xl mx-auto w-full">
+                <div class="auth-glass rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+                    
+                    <!-- Decorative Corner Highlight -->
+                    <div class="absolute -top-12 -right-12 w-32 h-32 bg-accent/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <!-- Already Logged In Banner (hidden by default, toggled via JS if already authenticated) -->
+                    <div id="already-logged-in-banner" class="hidden mb-6 p-4 rounded-2xl bg-forest/15 border border-forest/30 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="iconify text-forest text-2xl" data-icon="mdi:account-check"></span>
+                            <div>
+                                <p class="text-xs text-gray-300">You are currently logged in as</p>
+                                <p id="active-user-name" class="text-sm font-bold text-white"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="index.html" class="text-xs bg-forest text-primaryDark px-3 py-1.5 rounded-lg font-bold hover:bg-forest/90">Go to App</a>
+                            <button onclick="handleLogout()" class="text-xs text-red-400 hover:text-red-300 px-2 py-1">Logout</button>
+                        </div>
+                    </div>
+
+                    <!-- Card Header -->
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Welcome Back</h2>
+                        <p class="text-sm text-gray-400 mt-1">Sign in to your FarmGo dashboard to continue.</p>
+                    </div>
+
+                    <!-- Quick Demo Accounts Switcher -->
+                    <div class="mb-6 p-3.5 rounded-2xl bg-dark-900/80 border border-primaryLight/15">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                                <span class="iconify text-accent" data-icon="mdi:lightning-bolt"></span>
+                                Quick Demo One-Click Fill
+                            </span>
+                            <span class="text-[10px] text-gray-500">Instant test login</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="fillDemoCredentials('farmer')" class="demo-badge px-3 py-2 rounded-xl text-left flex items-center gap-2 text-xs font-medium text-wheat">
+                                <span class="iconify text-forest text-base shrink-0" data-icon="mdi:sprout"></span>
+                                <div>
+                                    <div class="font-bold text-white">Farmer Demo</div>
+                                    <div class="text-[10px] text-gray-400">Renting Tractors</div>
+                                </div>
+                            </button>
+                            <button type="button" onclick="fillDemoCredentials('owner')" class="demo-badge px-3 py-2 rounded-xl text-left flex items-center gap-2 text-xs font-medium text-wheat">
+                                <span class="iconify text-accent text-base shrink-0" data-icon="mdi:tractor"></span>
+                                <div>
+                                    <div class="font-bold text-white">Owner Demo</div>
+                                    <div class="text-[10px] text-gray-400">Listing Machinery</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Authentication Method Tabs -->
+                    <div class="flex items-center p-1 rounded-xl bg-dark-900/90 border border-primaryLight/20 mb-6">
+                        <button type="button" id="tab-password-btn" onclick="switchLoginTab('password')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-white bg-primaryLight/40 transition-all flex items-center justify-center gap-1.5">
+                            <span class="iconify text-sm" data-icon="mdi:key-outline"></span>
+                            <span>Password Login</span>
+                        </button>
+                        <button type="button" id="tab-otp-btn" onclick="switchLoginTab('otp')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                            <span class="iconify text-sm" data-icon="mdi:cellphone-message"></span>
+                            <span>Mobile OTP Login</span>
+                        </button>
+                    </div>
+
+                    <!-- Role Selector -->
+                    <div class="mb-5">
+                        <label class="auth-label">I am signing in as: <span class="required">*</span></label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="role-card active p-2.5 rounded-xl text-center" data-role="Farmer" onclick="selectRole(this, 'Farmer')">
+                                <div class="flex items-center justify-center mb-1 text-forest">
+                                    <span class="iconify text-xl" data-icon="mdi:sprout"></span>
+                                </div>
+                                <div class="text-xs font-bold text-white">Farmer</div>
+                                <div class="text-[10px] text-gray-400">Renter</div>
+                            </div>
+                            <div class="role-card p-2.5 rounded-xl text-center" data-role="Machine Owner" onclick="selectRole(this, 'Machine Owner')">
+                                <div class="flex items-center justify-center mb-1 text-accent">
+                                    <span class="iconify text-xl" data-icon="mdi:tractor"></span>
+                                </div>
+                                <div class="text-xs font-bold text-white">Fleet Owner</div>
+                                <div class="text-[10px] text-gray-400">Supplier</div>
+                            </div>
+                            <div class="role-card p-2.5 rounded-xl text-center" data-role="Driver/Operator" onclick="selectRole(this, 'Driver/Operator')">
+                                <div class="flex items-center justify-center mb-1 text-leaf">
+                                    <span class="iconify text-xl" data-icon="mdi:steering"></span>
+                                </div>
+                                <div class="text-xs font-bold text-white">Operator</div>
+                                <div class="text-[10px] text-gray-400">Driver</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM 1: Password Login -->
+                    <form id="password-login-form" onsubmit="handlePasswordLogin(event)" class="space-y-4">
+                        <!-- Email / Phone Input -->
+                        <div>
+                            <label for="login-identifier" class="auth-label">Email or Mobile Number <span class="required">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <span class="iconify text-lg" data-icon="mdi:account-outline"></span>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="login-identifier" 
+                                    required 
+                                    placeholder="e.g. rajesh@farmgo.in or 9876543210"
+                                    class="auth-glass-input w-full pl-10 pr-4 py-3 rounded-xl text-sm placeholder-gray-500"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="login-password" class="auth-label !mb-0">Password <span class="required">*</span></label>
+                                <a href="javascript:void(0)" onclick="handleForgotPassword()" class="text-xs text-accent hover:text-accentLight transition-colors">Forgot Password?</a>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <span class="iconify text-lg" data-icon="mdi:lock-outline"></span>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="login-password" 
+                                    required 
+                                    placeholder="Enter your password"
+                                    class="auth-glass-input w-full pl-10 pr-11 py-3 rounded-xl text-sm placeholder-gray-500"
+                                />
+                                <button 
+                                    type="button" 
+                                    onclick="togglePasswordVisibility('login-password', this)" 
+                                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-white"
+                                >
+                                    <span class="iconify text-lg" data-icon="mdi:eye-outline"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember Me & Terms Checkbox -->
+                        <div class="flex items-center justify-between text-xs text-gray-300">
+                            <label class="flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="remember-me" checked class="w-4 h-4 rounded border-gray-600 bg-dark-900 text-forest focus:ring-forest">
+                                <span>Remember me on this browser</span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submit-login-btn" class="btn-primary text-primaryDark font-bold w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm">
+                            <span class="iconify text-lg" data-icon="mdi:login-variant"></span>
+                            <span>Sign In to FarmGo</span>
+                        </button>
+                    </form>
+
+                    <!-- FORM 2: OTP Login (Hidden initially) -->
+                    <form id="otp-login-form" onsubmit="handleOtpLogin(event)" class="space-y-4 hidden">
+                        <!-- Mobile Number Input -->
+                        <div>
+                            <label for="otp-mobile" class="auth-label">Registered 10-Digit Mobile Number <span class="required">*</span></label>
+                            <div class="flex gap-2">
+                                <div class="w-20 px-3 py-3 rounded-xl auth-glass-input text-center text-sm font-semibold text-gray-300 flex items-center justify-center gap-1 shrink-0">
+                                    <span>🇮🇳 +91</span>
+                                </div>
+                                <div class="relative flex-1">
+                                    <input 
+                                        type="tel" 
+                                        id="otp-mobile" 
+                                        maxlength="10" 
+                                        pattern="[0-9]{10}" 
+                                        placeholder="Enter 10-digit number"
+                                        class="auth-glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-gray-500 font-mono"
+                                    />
+                                </div>
+                                <button 
+                                    type="button" 
+                                    id="send-otp-btn" 
+                                    onclick="sendSimulatedOtp()" 
+                                    class="btn-secondary px-4 py-3 rounded-xl text-xs font-semibold text-forest whitespace-nowrap"
+                                >
+                                    Get OTP
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- OTP Input Group (Shown after OTP requested) -->
+                        <div id="otp-digits-container" class="p-4 rounded-2xl bg-dark-900/70 border border-primaryLight/20 space-y-3 hidden">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-300">Enter the 4-digit code sent to your phone:</span>
+                                <span id="simulated-otp-code-hint" class="text-accent font-mono font-bold bg-accent/10 px-2 py-0.5 rounded cursor-pointer" onclick="autoFillOtp()" title="Click to auto-fill">Code: 4829 (Click to fill)</span>
+                            </div>
+                            
+                            <div class="flex justify-center gap-3">
+                                <input type="text" maxlength="1" class="otp-digit-input auth-glass-input" id="otp-1" oninput="focusNextOtp(this, 'otp-2')">
+                                <input type="text" maxlength="1" class="otp-digit-input auth-glass-input" id="otp-2" oninput="focusNextOtp(this, 'otp-3')">
+                                <input type="text" maxlength="1" class="otp-digit-input auth-glass-input" id="otp-3" oninput="focusNextOtp(this, 'otp-4')">
+                                <input type="text" maxlength="1" class="otp-digit-input auth-glass-input" id="otp-4" oninput="focusNextOtp(this, null)">
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="button" onclick="sendSimulatedOtp()" class="text-[11px] text-gray-400 hover:text-accent">Didn't receive code? Resend in 30s</button>
+                            </div>
+                        </div>
+
+                        <!-- Submit OTP Button -->
+                        <button type="submit" id="submit-otp-btn" class="btn-primary text-primaryDark font-bold w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm">
+                            <span class="iconify text-lg" data-icon="mdi:check-decagram"></span>
+                            <span>Verify & Sign In</span>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="relative my-6 text-center">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-primaryLight/15"></div></div>
+                        <span class="relative px-3 bg-dark-800 text-[11px] text-gray-400 uppercase tracking-wider">Or continue with</span>
+                    </div>
+
+                    <!-- Social Logins -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="handleSocialAuth('Google')" class="auth-social-btn py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold text-gray-200">
+                            <span class="iconify text-base" data-icon="logos:google-icon"></span>
+                            <span>Google</span>
+                        </button>
+                        <button type="button" onclick="handleSocialAuth('Kisan Call Center / Govt ID')" class="auth-social-btn py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold text-gray-200">
+                            <span class="iconify text-forest text-base" data-icon="mdi:card-account-details-outline"></span>
+                            <span>AgriStack ID</span>
+                        </button>
+                    </div>
+
+                    <!-- Link to Sign Up -->
+                    <div class="mt-6 pt-5 border-t border-primaryLight/15 text-center">
+                        <p class="text-xs text-gray-400">
+                            Don't have a FarmGo account? 
+                            <a href="signup.html" class="font-bold text-accent hover:text-accentLight ml-1 inline-flex items-center gap-0.5">
+                                Create Account
+                                <span class="iconify text-sm" data-icon="mdi:arrow-right"></span>
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Footer Trust Badges -->
+                <div class="mt-4 flex items-center justify-center gap-6 text-[11px] text-gray-500">
+                    <span class="flex items-center gap-1"><span class="iconify text-forest" data-icon="mdi:lock"></span> 256-bit SSL Secure</span>
+                    <span class="flex items-center gap-1"><span class="iconify text-forest" data-icon="mdi:check-circle"></span> ISO 27001 Certified</span>
+                    <span class="flex items-center gap-1"><span class="iconify text-forest" data-icon="mdi:tractor"></span> Govt E-NAM Compatible</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Simple Page Footer -->
+    <footer class="w-full py-6 text-center text-xs text-gray-500 border-t border-primaryLight/10 mt-12 bg-primaryDark/40">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>&copy; 2025 FarmGo Agri-Tech Network India. All rights reserved.</div>
+            <div class="flex gap-4 text-gray-400">
+                <a href="index.html" class="hover:text-accent">Home</a>
+                <a href="signup.html" class="hover:text-accent">Sign Up</a>
+                <a href="index.html#contact" class="hover:text-accent">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // State
+        let currentRole = 'Farmer';
+        let simulatedOtpCode = '4829';
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icon = type === 'success' ? 'mdi:check-circle' : type === 'error' ? 'mdi:alert-circle' : 'mdi:information';
+            const color = type === 'success' ? 'text-forest' : type === 'error' ? 'text-red-400' : 'text-accent';
+            toast.className = 'toast glass rounded-xl px-5 py-4 flex items-center gap-3 min-w-[280px] shadow-2xl';
+            toast.innerHTML = `<span class="iconify ${color} text-xl" data-icon="${icon}"></span><span class="text-sm font-medium text-white">${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => { 
+                toast.classList.remove('show'); 
+                setTimeout(() => toast.remove(), 400); 
+            }, 3200);
+        }
+
+        // Check if user already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const activeUser = localStorage.getItem('farmgo_user');
+            if (activeUser) {
+                try {
+                    const parsed = JSON.parse(activeUser);
+                    document.getElementById('already-logged-in-banner').classList.remove('hidden');
+                    document.getElementById('active-user-name').textContent = `${parsed.name} (${parsed.role || 'Member'})`;
+                } catch(e) {}
+            }
+        });
+
+        function handleLogout() {
+            localStorage.removeItem('farmgo_user');
+            document.getElementById('already-logged-in-banner').classList.add('hidden');
+            showToast('Logged out successfully.', 'info');
+        }
+
+        // Switch Tab
+        function switchLoginTab(tab) {
+            const passForm = document.getElementById('password-login-form');
+            const otpForm = document.getElementById('otp-login-form');
+            const passBtn = document.getElementById('tab-password-btn');
+            const otpBtn = document.getElementById('tab-otp-btn');
+
+            if (tab === 'password') {
+                passForm.classList.remove('hidden');
+                otpForm.classList.add('hidden');
+                passBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold text-white bg-primaryLight/40 transition-all flex items-center justify-center gap-1.5';
+                otpBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center justify-center gap-1.5';
+            } else {
+                passForm.classList.add('hidden');
+                otpForm.classList.remove('hidden');
+                otpBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold text-white bg-primaryLight/40 transition-all flex items-center justify-center gap-1.5';
+                passBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all flex items-center justify-center gap-1.5';
+            }
+        }
+
+        // Select Role
+        function selectRole(element, role) {
+            document.querySelectorAll('.role-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+            currentRole = role;
+        }
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('.iconify');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-icon', 'mdi:eye-off-outline');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-icon', 'mdi:eye-outline');
+            }
+        }
+
+        // Demo autofill
+        function fillDemoCredentials(type) {
+            switchLoginTab('password');
+            if (type === 'farmer') {
+                document.getElementById('login-identifier').value = 'rajesh.farmer@farmgo.in';
+                document.getElementById('login-password').value = 'farmer2025';
+                const farmerCard = document.querySelector('.role-card[data-role="Farmer"]');
+                if (farmerCard) selectRole(farmerCard, 'Farmer');
+                showToast('Filled Farmer demo credentials!', 'info');
+            } else {
+                document.getElementById('login-identifier').value = 'gurpreet.owner@farmgo.in';
+                document.getElementById('login-password').value = 'tractor2025';
+                const ownerCard = document.querySelector('.role-card[data-role="Machine Owner"]');
+                if (ownerCard) selectRole(ownerCard, 'Machine Owner');
+                showToast('Filled Fleet Owner demo credentials!', 'info');
+            }
+        }
+
+        // Handle Password Login Submit
+        function handlePasswordLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!identifier || !password) {
+                showToast('Please enter your email/mobile and password', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('submit-login-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="iconify animate-spin text-lg" data-icon="mdi:loading"></span><span>Signing In...</span>`;
+
+            setTimeout(() => {
+                // Name resolution from identifier or role
+                let displayName = 'Farmer Rajesh Patel';
+                if (currentRole === 'Machine Owner') displayName = 'Gurpreet Singh (Karnal Tractors)';
+                if (currentRole === 'Driver/Operator') displayName = 'Sukhwinder Singh (Master Operator)';
+                if (identifier.includes('@')) {
+                    const local = identifier.split('@')[0];
+                    displayName = local.charAt(0).toUpperCase() + local.slice(1).replace('.', ' ');
+                }
+
+                const userData = {
+                    name: displayName,
+                    identifier: identifier,
+                    email: identifier.includes('@') ? identifier : `${identifier}@user.farmgo.in`,
+                    phone: identifier.includes('@') ? '+91 98765 43210' : identifier,
+                    role: currentRole,
+                    avatar: currentRole === 'Machine Owner' 
+                        ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80' 
+                        : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+                    district: 'Karnal, Haryana',
+                    token: 'farmgo_token_' + Date.now(),
+                    loginTime: new Date().toISOString()
+                };
+
+                localStorage.setItem('farmgo_user', JSON.stringify(userData));
+                showToast(`Welcome back, ${displayName}! Redirecting...`, 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 800);
+        }
+
+        // Simulated OTP
+        function sendSimulatedOtp() {
+            const mobile = document.getElementById('otp-mobile').value.trim();
+            if (!mobile || mobile.length < 10) {
+                showToast('Please enter a valid 10-digit mobile number', 'error');
+                return;
+            }
+
+            // Generate 4-digit code
+            simulatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('otp-digits-container').classList.remove('hidden');
+            document.getElementById('simulated-otp-code-hint').textContent = `Demo Code: ${simulatedOtpCode} (Click to auto-fill)`;
+            showToast(`FarmGo OTP: ${simulatedOtpCode} sent to +91 ${mobile}`, 'info');
+
+            // Focus first box
+            setTimeout(() => {
+                document.getElementById('otp-1').focus();
+            }, 200);
+        }
+
+        function focusNextOtp(current, nextId) {
+            if (current.value.length >= 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function autoFillOtp() {
+            const digits = simulatedOtpCode.split('');
+            document.getElementById('otp-1').value = digits[0] || '';
+            document.getElementById('otp-2').value = digits[1] || '';
+            document.getElementById('otp-3').value = digits[2] || '';
+            document.getElementById('otp-4').value = digits[3] || '';
+            showToast('OTP auto-filled!', 'info');
+        }
+
+        function handleOtpLogin(e) {
+            e.preventDefault();
+            const o1 = document.getElementById('otp-1').value;
+            const o2 = document.getElementById('otp-2').value;
+            const o3 = document.getElementById('otp-3').value;
+            const o4 = document.getElementById('otp-4').value;
+            const entered = `${o1}${o2}${o3}${o4}`;
+            const mobile = document.getElementById('otp-mobile').value.trim();
+
+            if (!mobile || mobile.length < 10) {
+                showToast('Please enter your 10-digit mobile number first', 'error');
+                return;
+            }
+
+            if (entered !== simulatedOtpCode) {
+                showToast('Invalid OTP entered. Please check the code.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('submit-otp-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="iconify animate-spin text-lg" data-icon="mdi:loading"></span><span>Verifying...</span>`;
+
+            setTimeout(() => {
+                const userData = {
+                    name: `Farmer ${mobile.slice(-4)}`,
+                    phone: `+91 ${mobile}`,
+                    email: `farmer_${mobile.slice(-4)}@farmgo.in`,
+                    role: currentRole,
+                    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+                    district: 'Panipat, Haryana',
+                    token: 'farmgo_token_' + Date.now(),
+                    loginTime: new Date().toISOString()
+                };
+
+                localStorage.setItem('farmgo_user', JSON.stringify(userData));
+                showToast('Mobile OTP verified successfully! Redirecting...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 700);
+        }
+
+        function handleSocialAuth(provider) {
+            showToast(`Connecting with ${provider}...`, 'info');
+            setTimeout(() => {
+                const userData = {
+                    name: 'Rajesh Kumar Patel',
+                    email: 'rajesh.patel.farmer@gmail.com',
+                    phone: '+91 94567 89012',
+                    role: currentRole,
+                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+                    district: 'Karnal, Haryana',
+                    provider: provider,
+                    token: 'farmgo_social_' + Date.now(),
+                    loginTime: new Date().toISOString()
+                };
+                localStorage.setItem('farmgo_user', JSON.stringify(userData));
+                showToast(`Signed in via ${provider}! Redirecting...`, 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 800);
+        }
+
+        function handleForgotPassword() {
+            const id = prompt('Enter your registered email or mobile number to receive reset link:');
+            if (id) {
+                showToast(`Password reset link dispatched to ${id}. Please check your messages.`, 'success');
+            }
+        }
+    </script>
+</body>
+</html>

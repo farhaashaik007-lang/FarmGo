@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmGo — Rent Premium Tractors, Harvest Success</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1B4332',
+                        primaryLight: '#2D6A4F',
+                        primaryDark: '#081C15',
+                        accent: '#D4A017',
+                        accentLight: '#E8B84B',
+                        earth: '#8B6914',
+                        soil: '#3E2723',
+                        wheat: '#F5DEB3',
+                        leaf: '#40916C',
+                        forest: '#52B788',
+                        dark: { 900: '#0B0F0E', 800: '#111916', 700: '#1A2520', 600: '#243530' }
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delay': 'float 6s ease-in-out 2s infinite',
+                        'float-slow': 'float 8s ease-in-out 1s infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                        'slide-down': 'slideDown 0.4s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'rotate-y': 'rotateY 8s linear infinite',
+                        'bounce-gentle': 'bounceGentle 3s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                        'track': 'trackMove 4s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0B0F0E; color: #fff; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0B0F0E; }
+        ::-webkit-scrollbar-thumb { background: #2D6A4F; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #40916C; }
+
+        @keyframes float { 0%,100% { transform: translateY(0px) rotateX(0deg); } 50% { transform: translateY(-20px) rotateX(3deg); } }
+        @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 20px rgba(212,160,23,0.3); } 50% { box-shadow: 0 0 40px rgba(212,160,23,0.6); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes rotateY { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        @keyframes bounceGentle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes trackMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50px); } }
+        @keyframes tractorDrive { 0%,100% { transform: translateX(-5px) rotate(-1deg); } 25% { transform: translateX(5px) rotate(1deg); } 50% { transform: translateX(-3px) rotate(-0.5deg); } 75% { transform: translateX(3px) rotate(0.5deg); } }
+        @keyframes wheelSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes smokeDrift { 0% { opacity: 0.6; transform: translate(0,0) scale(1); } 100% { opacity: 0; transform: translate(30px,-40px) scale(2); } }
+        @keyframes fieldWave { 0%,100% { transform: skewX(0deg); } 25% { transform: skewX(1deg); } 75% { transform: skewX(-1deg); } }
+        @keyframes pageTransition { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .page-enter { animation: pageTransition 0.5s ease-out forwards; }
+
+        .card-3d { perspective: 1000px; }
+        .card-3d-inner { transition: transform 0.6s cubic-bezier(0.23,1,0.32,1); transform-style: preserve-3d; }
+        .card-3d:hover .card-3d-inner { transform: rotateY(-8deg) rotateX(5deg) translateZ(20px); }
+
+        .tractor-3d { perspective: 800px; transform-style: preserve-3d; }
+        .tractor-3d:hover { transform: rotateY(15deg) rotateX(-5deg) scale(1.05); }
+        .tractor-3d { transition: transform 0.8s cubic-bezier(0.23,1,0.32,1); }
+
+        .glass { background: rgba(27,67,50,0.15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(45,106,79,0.2); }
+        .glass-light { background: rgba(27,67,50,0.08); backdrop-filter: blur(12px); border: 1px solid rgba(45,106,79,0.1); }
+
+        .text-gradient-hero { background: linear-gradient(135deg, #ffffff 0%, #52B788 50%, #D4A017 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-gradient-accent { background: linear-gradient(135deg, #D4A017, #E8B84B, #F5DEB3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-gradient-leaf { background: linear-gradient(135deg, #40916C, #52B788, #95D5B2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        .btn-primary { background: linear-gradient(135deg, #D4A017, #B8860B); position: relative; overflow: hidden; }
+        .btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212,160,23,0.4); }
+        .btn-primary { transition: all 0.3s ease; }
+
+        .btn-secondary { border: 1px solid rgba(82,183,136,0.5); background: rgba(45,106,79,0.1); }
+        .btn-secondary:hover { background: rgba(45,106,79,0.3); border-color: #52B788; transform: translateY(-2px); }
+        .btn-secondary { transition: all 0.3s ease; }
+
+        .field-pattern { background-image: repeating-linear-gradient(90deg, rgba(45,106,79,0.03) 0px, rgba(45,106,79,0.03) 1px, transparent 1px, transparent 60px); }
+
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 50%; width: 0; height: 2px; background: #D4A017; transition: all 0.3s ease; transform: translateX(-50%); border-radius: 1px; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: #D4A017; }
+
+        .parallax-layer { transition: transform 0.1s linear; }
+
+        .tractor-svg { animation: tractorDrive 3s ease-in-out infinite; }
+        .wheel-spin { animation: wheelSpin 2s linear infinite; }
+        .smoke { animation: smokeDrift 2s ease-out infinite; }
+        .smoke-delayed { animation: smokeDrift 2s ease-out 0.5s infinite; }
+        .smoke-delayed2 { animation: smokeDrift 2s ease-out 1s infinite; }
+
+        .shimmer-bg { background: linear-gradient(90deg, transparent 0%, rgba(212,160,23,0.1) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 2.5s linear infinite; }
+
+        .counter { font-variant-numeric: tabular-nums; }
+
+        .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.23,1,0.32,1); }
+        .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+
+        .mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); }
+        .mobile-menu.open { transform: translateX(0); }
+
+        .track-marks { overflow: hidden; }
+        .track-marks::before { content: '— — — — — — — — — — — — — — — — —'; position: absolute; bottom: 0; left: 0; color: rgba(139,105,20,0.2); font-size: 12px; letter-spacing: 8px; animation: trackMove 4s linear infinite; }
+
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #52B788 !important; box-shadow: 0 0 0 3px rgba(82,183,136,0.15); }
+
+        .pricing-card { transform: scale(1); transition: all 0.4s ease; }
+        .pricing-card:hover { transform: scale(1.03) translateY(-8px); }
+        .pricing-featured { border: 2px solid rgba(212,160,23,0.4); transform: scale(1.05); }
+        .pricing-featured:hover { transform: scale(1.08) translateY(-8px); }
+
+        .toast { transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); }
+        .toast.show { transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            .pricing-featured { transform: scale(1); }
+            .pricing-featured:hover { transform: scale(1.03) translateY(-8px); }
+        }
+    </style>
+</head>
+<body class="field-pattern">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3"></div>
+
+    <!-- Navigation --> 
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-[100] transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" onclick="navigateTo('home')" class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-earth flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <span class="iconify text-primaryDark text-xl" data-icon="mdi:tractor-variant"></span>
+                    </div>
+                    <span class="text-xl font-bold">Farm<span class="text-accent">Go</span></span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a onclick="navigateTo('home')" class="nav-link text-sm font-medium text-gray-300 hover:text-white cursor-pointer transition-colors" data-page="home">Home</a>
+                    <a onclick="navigateTo('fleet')" class="nav-link text-sm font-medium text-gray-300 hover:text-white cursor-pointer transition-colors" data-page="fleet">Fleet</a>
+                    <a onclick="navigateTo('how-it-works')" class="nav-link text-sm font-medium text-gray-300 hover:text-white cursor-pointer transition-colors" data-page="how-it-works">How It Works</a>
+                    <a onclick="navigateTo('pricing')" class="nav-link text-sm font-medium text-gray-300 hover:text-white cursor-pointer transition-colors" data-page="pricing">Pricing</a>
+                    <a onclick="navigateTo('contact')" class="nav-link text-sm font-medium text-gray-300 hover:text-white cursor-pointer transition-colors" data-page="contact">Contact</a>
+                </div>
+
+                <!-- CTA + Mobile -->
+                <div class="flex items-center gap-3">
+                    <div id="desktop-auth-slot" class="flex items-center gap-2">
+                        <!-- Populated by updateNavAuth() -->
+                        <a href="login.html" class="hidden sm:inline-flex text-xs font-semibold text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-white/5 transition-all items-center gap-1.5">
+                            <span class="iconify text-forest text-base" data-icon="mdi:login-variant"></span>
+                            <span>Sign In</span>
+                        </a>
+                        <a href="signup.html" class="hidden sm:inline-flex text-xs font-semibold text-accent hover:text-accentLight border border-accent/40 hover:border-accent px-3 py-2 rounded-xl transition-all items-center gap-1.5">
+                            <span class="iconify text-base" data-icon="mdi:account-plus-outline"></span>
+                            <span>Sign Up</span>
+                        </a>
+                    </div>
+                    <button onclick="navigateTo('fleet')" class="hidden md:flex btn-primary text-primaryDark font-semibold text-xs px-5 py-2.5 rounded-xl items-center gap-2 shrink-0">
+                        <span class="iconify" data-icon="mdi:calendar-check"></span>
+                        Book Now
+                    </button>
+                    <button id="mobile-toggle" onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg glass">
+                        <span class="iconify text-xl" data-icon="mdi:menu"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu fixed inset-0 z-[101] bg-primaryDark/95 backdrop-blur-xl md:hidden flex flex-col justify-between p-6">
+        <div class="flex items-center justify-between">
+            <span class="text-xl font-bold">Farm<span class="text-accent">Go</span></span>
+            <button onclick="toggleMobileMenu()" class="w-10 h-10 flex items-center justify-center rounded-lg glass">
+                <span class="iconify text-xl" data-icon="mdi:close"></span>
+            </button>
+        </div>
+        <div class="flex flex-col items-center justify-center gap-5 my-auto">
+            <a onclick="navigateTo('home');toggleMobileMenu()" class="text-xl font-medium text-gray-300 hover:text-accent cursor-pointer transition-colors">Home</a>
+            <a onclick="navigateTo('fleet');toggleMobileMenu()" class="text-xl font-medium text-gray-300 hover:text-accent cursor-pointer transition-colors">Fleet</a>
+            <a onclick="navigateTo('how-it-works');toggleMobileMenu()" class="text-xl font-medium text-gray-300 hover:text-accent cursor-pointer transition-colors">How It Works</a>
+            <a onclick="navigateTo('pricing');toggleMobileMenu()" class="text-xl font-medium text-gray-300 hover:text-accent cursor-pointer transition-colors">Pricing</a>
+            <a onclick="navigateTo('contact');toggleMobileMenu()" class="text-xl font-medium text-gray-300 hover:text-accent cursor-pointer transition-colors">Contact</a>
+            
+            <!-- Mobile Auth Slot -->
+            <div id="mobile-auth-slot" class="w-full max-w-xs flex flex-col gap-2.5 pt-4 border-t border-primaryLight/20">
+                <a href="login.html" class="w-full py-2.5 rounded-xl glass text-center text-sm font-semibold text-white flex items-center justify-center gap-2">
+                    <span class="iconify text-forest" data-icon="mdi:login-variant"></span>
+                    <span>Farmer Sign In</span>
+                </a>
+                <a href="signup.html" class="w-full py-2.5 rounded-xl border border-accent/40 text-accent text-center text-sm font-semibold flex items-center justify-center gap-2">
+                    <span class="iconify" data-icon="mdi:account-plus-outline"></span>
+                    <span>Create Free Account</span>
+                </a>
+            </div>
+            
+            <button onclick="navigateTo('fleet');toggleMobileMenu()" class="btn-primary text-primaryDark font-semibold px-8 py-3 rounded-xl w-full max-w-xs">Book Now</button>
+        </div>
+        <div class="text-center text-xs text-gray-500">
+            FarmGo India • 24/7 Tractor Support
+        </div>
+    </div>
+
+    <!-- Bookings & Profile Modal -->
+    <div id="bookings-modal" class="fixed inset-0 z-[1000] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="auth-glass rounded-3xl max-w-lg w-full p-6 sm:p-8 relative border border-forest/30 shadow-2xl">
+            <button onclick="closeBookingsModal()" class="absolute top-5 right-5 w-8 h-8 rounded-lg glass flex items-center justify-center text-gray-400 hover:text-white">
+                <span class="iconify text-xl" data-icon="mdi:close"></span>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-forest/20 text-forest flex items-center justify-center">
+                    <span class="iconify text-2xl" data-icon="mdi:calendar-check"></span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">My Active Rentals</h3>
+                    <p class="text-xs text-gray-400">FarmGo Live Dispatch & Equipment Tracking</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                <!-- Booking Card 1 -->
+                <div class="p-4 rounded-2xl bg-dark-900/80 border border-primaryLight/20">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-xs font-semibold text-accent px-2 py-0.5 rounded bg-accent/10">Active Trip #FG-8821</span>
+                            <h4 class="text-base font-bold text-white mt-1">Mahindra 575 DI (45 HP)</h4>
+                        </div>
+                        <span class="text-xs font-bold text-forest bg-forest/15 px-2.5 py-1 rounded-full flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-forest animate-pulse"></span> On-Site
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-300 space-y-1 my-3 bg-dark-800/60 p-3 rounded-xl border border-white/5">
+                        <div class="flex justify-between"><span>Operator:</span> <strong class="text-white">Sukhwinder Singh</strong></div>
+                        <div class="flex justify-between"><span>Duration:</span> <strong class="text-white">8 Hours (Sowing)</strong></div>
+                        <div class="flex justify-between"><span>Rate:</span> <strong class="text-accent">₹499/hr (₹3,992 Total)</strong></div>
+                        <div class="flex justify-between"><span>Location:</span> <strong class="text-white">Plot #4, Karnal, Haryana</strong></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="showToast('Operator Sukhwinder contacted! Calling +91 98765 11223...', 'info')" class="flex-1 btn-secondary py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 text-white">
+                            <span class="iconify" data-icon="mdi:phone"></span> Call Driver
+                        </button>
+                        <button onclick="showToast('Live GPS Coordinates: Lat 29.6857, Long 76.9905 (Field Speed: 6 km/h)', 'info')" class="flex-1 glass py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 text-accent hover:border-accent">
+                            <span class="iconify" data-icon="mdi:crosshairs-gps"></span> Track GPS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Booking Card 2 -->
+                <div class="p-4 rounded-2xl bg-dark-900/80 border border-primaryLight/20">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-400 px-2 py-0.5 rounded bg-white/5">Scheduled #FG-7409</span>
+                            <h4 class="text-base font-bold text-white mt-1">John Deere 5310 (55 HP)</h4>
+                        </div>
+                        <span class="text-xs font-medium text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-full">
+                            Tomorrow 7:00 AM
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-300 space-y-1 my-3 bg-dark-800/60 p-3 rounded-xl border border-white/5">
+                        <div class="flex justify-between"><span>Attachment:</span> <strong class="text-white">Heavy Rotary Tiller</strong></div>
+                        <div class="flex justify-between"><span>Duration:</span> <strong class="text-white">6 Hours (Land Prep)</strong></div>
+                        <div class="flex justify-between"><span>Estimated:</span> <strong class="text-accent">₹4,194</strong></div>
+                    </div>
+                    <button onclick="showToast('Booking details downloaded (PDF invoice sent to WhatsApp)', 'success')" class="w-full glass py-2 rounded-xl text-xs font-medium text-gray-300 hover:text-white flex items-center justify-center gap-1">
+                        <span class="iconify" data-icon="mdi:receipt-text-outline"></span> View Booking Receipt
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-primaryLight/15 flex justify-between items-center">
+                <span class="text-xs text-gray-400">Need support? 24/7 Helpline: 1800-419-FARM</span>
+                <button onclick="closeBookingsModal()" class="btn-primary text-primaryDark font-bold px-4 py-2 rounded-xl text-xs">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Container -->
+    <main id="page-container"></main>
+
+    <!-- Footer -->
+    <footer class="relative border-t border-primaryLight/20 bg-primaryDark/50">
+        <div class="max-w-7xl mx-auto px-6 py-16">
+            <div class="grid md:grid-cols-4 gap-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-earth flex items-center justify-center">
+                            <span class="iconify text-primaryDark text-xl" data-icon="mdi:tractor-variant"></span>
+                        </div>
+                        <span class="text-xl font-bold">Farm<span class="text-accent">Go</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Empowering farmers with modern agricultural machinery on demand. Rent premium tractors, harvest success.</p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-9 h-9 rounded-lg glass flex items-center justify-center hover:bg-primaryLight/30 transition-colors"><span class="iconify text-gray-400 hover:text-white" data-icon="mdi:facebook"></span></a>
+                        <a href="#" class="w-9 h-9 rounded-lg glass flex items-center justify-center hover:bg-primaryLight/30 transition-colors"><span class="iconify text-gray-400 hover:text-white" data-icon="mdi:twitter"></span></a>
+                        <a href="#" class="w-9 h-9 rounded-lg glass flex items-center justify-center hover:bg-primaryLight/30 transition-colors"><span class="iconify text-gray-400 hover:text-white" data-icon="mdi:instagram"></span></a>
+                        <a href="#" class="w-9 h-9 rounded-lg glass flex items-center justify-center hover:bg-primaryLight/30 transition-colors"><span class="iconify text-gray-400 hover:text-white" data-icon="mdi:youtube"></span></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a onclick="navigateTo('home')" class="hover:text-accent cursor-pointer transition-colors">Home</a></li>
+                        <li><a onclick="navigateTo('fleet')" class="hover:text-accent cursor-pointer transition-colors">Browse Fleet</a></li>
+                        <li><a onclick="navigateTo('how-it-works')" class="hover:text-accent cursor-pointer transition-colors">How It Works</a></li>
+                        <li><a onclick="navigateTo('pricing')" class="hover:text-accent cursor-pointer transition-colors">Pricing Plans</a></li>
+                        <li><a href="login.html" class="hover:text-accent cursor-pointer transition-colors flex items-center gap-1.5"><span class="iconify text-forest text-sm" data-icon="mdi:login-variant"></span> Farmer Sign In</a></li>
+                        <li><a href="signup.html" class="hover:text-accent cursor-pointer transition-colors flex items-center gap-1.5"><span class="iconify text-accent text-sm" data-icon="mdi:account-plus"></span> Register Free</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Support</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-accent transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Safety Guidelines</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Contact</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><span class="iconify text-forest" data-icon="mdi:phone"></span> +91 98765 43210</li>
+                        <li class="flex items-center gap-2"><span class="iconify text-forest" data-icon="mdi:email"></span> rent@tractorhub.in</li>
+                        <li class="flex items-center gap-2"><span class="iconify text-forest" data-icon="mdi:map-marker"></span> Karnal, Haryana, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-primaryLight/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-gray-500 text-sm">&copy; 2025 FarmGo Agri-Tech. All rights reserved.</p>
+                <p class="text-gray-500 text-xs">Built with 🚜 for Indian Farmers</p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+// ============================================================
+// STATE & ROUTING
+// ============================================================
+let currentPage = 'home';
+let mobileMenuOpen = false;
+
+const pages = {
+    home: renderHome,
+    fleet: renderFleet,
+    'how-it-works': renderHowItWorks,
+    pricing: renderPricing,
+    contact: renderContact,
+    login: renderLoginPage,
+    signup: renderSignupPage
+};
+
+function navigateTo(page) {
+    if (currentPage === page) return;
+    currentPage = page;
+    window.location.hash = page;
+    renderPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateNavLinks();
+}
+
+function renderPage() {
+    const container = document.getElementById('page-container');
+    container.innerHTML = '';
+    const renderFn = pages[currentPage] || renderHome;
+    container.innerHTML = renderFn();
+    container.querySelector('.page-content')?.classList.add('page-enter');
+    initScrollReveal();
+    initCounters();
+    init3DCards();
+    initParallax();
+}
+
+function updateNavLinks() {
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.dataset.page === currentPage);
+    });
+}
+
+function toggleMobileMenu() {
+    mobileMenuOpen = !mobileMenuOpen;
+    document.getElementById('mobile-menu').classList.toggle('open', mobileMenuOpen);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    const icon = type === 'success' ? 'mdi:check-circle' : type === 'error' ? 'mdi:alert-circle' : 'mdi:information';
+    const color = type === 'success' ? 'text-forest' : type === 'error' ? 'text-red-400' : 'text-accent';
+    toast.className = 'toast glass rounded-xl px-5 py-4 flex items-center gap-3 min-w-[280px]';
+    toast.innerHTML = `<span class="iconify ${color} text-xl" data-icon="${icon}"></span><span class="text-sm font-medium">${message}</span>`;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
+}
+
+// ============================================================
+// SHARED COMPONENTS
+// ============================================================
+function tractorCard3D(tractor, index) {
+    return `
+    <div class="card-3d group scroll-reveal" style="transition-delay: ${index * 100}ms">
+        <div class="card-3d-inner glass-light rounded-2xl overflow-hidden">
+            <div class="relative h-56 overflow-hidden bg-gradient-to-br from-dark-700 to-dark-800">
+                <img src="${tractor.image}" alt="${tractor.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent to-transparent"></div>
+                ${tractor.featured ? '<div class="absolute top-4 left-4 px-3 py-1 rounded-full bg-accent text-primaryDark text-xs font-bold flex items-center gap-1"><span class="iconify" data-icon="mdi:star"></span> Popular</div>' : ''}
+                <div class="absolute top-4 right-4 px-3 py-1 rounded-full glass text-xs font-medium text-forest">${tractor.available ? '● Available' : '● Booked'}</div>
+                <div class="absolute bottom-4 left-4 right-4">
+                    <h3 class="text-lg font-bold text-white">${tractor.name}</h3>
+                    <p class="text-sm text-gray-300">${tractor.brand}</p>
+                </div>
+            </div>
+            <div class="p-5">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <span class="iconify text-forest" data-icon="mdi:engine"></span>
+                        <span>${tractor.hp} HP</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <span class="iconify text-forest" data-icon="mdi:steering"></span>
+                        <span>${tractor.transmission}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <span class="iconify text-forest" data-icon="mdi:crop"></span>
+                        <span>${tractor.acreage} acres/day</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <span class="iconify text-forest" data-icon="mdi:fuel"></span>
+                        <span>${tractor.fuel} L/hr</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-primaryLight/10">
+                    <div>
+                        <span class="text-2xl font-bold text-accent">₹${tractor.price}</span>
+                        <span class="text-gray-500 text-sm">/hour</span>
+                    </div>
+                    <button onclick="handleRentTractor('${tractor.name}')" class="btn-primary text-primaryDark font-semibold text-sm px-5 py-2.5 rounded-xl flex items-center gap-2">
+                        <span class="iconify" data-icon="mdi:cart-plus"></span>
+                        Rent
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// ============================================================
+// HOME PAGE
+// ============================================================
+function renderHome() {
+    return `
+    <div class="page-content">
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center overflow-hidden">
+            <!-- BG Glow -->
+            <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primaryLight/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <!-- Animated Grid -->
+            <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(82,183,136,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(82,183,136,0.3) 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+            <!-- Floating Elements -->
+            <div class="absolute top-32 right-20 animate-float pointer-events-none hidden lg:block">
+                <div class="w-16 h-16 rounded-2xl glass flex items-center justify-center">
+                    <span class="iconify text-3xl text-forest" data-icon="mdi:sprout"></span>
+                </div>
+            </div>
+            <div class="absolute bottom-40 left-16 animate-float-delay pointer-events-none hidden lg:block">
+                <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center">
+                    <span class="iconify text-2xl text-accent" data-icon="mdi:weather-sunny"></span>
+                </div>
+            </div>
+            <div class="absolute top-1/2 right-1/3 animate-float-slow pointer-events-none hidden xl:block">
+                <div class="w-12 h-12 rounded-xl glass flex items-center justify-center">
+                    <span class="iconify text-xl text-wheat" data-icon="mdi:grain"></span>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 pt-32 pb-20 w-full">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="scroll-reveal">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8">
+                            <span class="w-2 h-2 rounded-full bg-forest animate-pulse"></span>
+                            <span class="text-xs font-medium text-forest">Now serving 50+ districts</span>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6">
+                            <span class="text-gradient-hero">Rent Premium</span><br/>
+                            <span class="text-gradient-accent">Tractors,</span>
+                            <span class="text-white"> Harvest</span><br/>
+                            <span class="text-gradient-leaf">Success</span>
+                        </h1>
+                        <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-xl mb-10">
+                            Access powerful, well-maintained tractors for every season. From ploughing to harvesting — pay only for what you use, when you need it.
+                        </p>
+                        <div class="flex flex-wrap gap-4 mb-12">
+                            <button onclick="navigateTo('fleet')" class="btn-primary text-primaryDark font-bold text-base px-8 py-4 rounded-2xl flex items-center gap-3 shadow-lg">
+                                <span class="iconify text-xl" data-icon="mdi:tractor-variant"></span>
+                                Browse Fleet
+                            </button>
+                            <button onclick="navigateTo('how-it-works')" class="btn-secondary text-white font-medium text-base px-8 py-4 rounded-2xl flex items-center gap-3">
+                                <span class="iconify text-xl" data-icon="mdi:play-circle-outline"></span>
+                                How It Works
+                            </button>
+                        </div>
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-6">
+                            <div>
+                                <div class="text-3xl md:text-4xl font-bold text-white counter" data-target="2500">0</div>
+                                <div class="text-sm text-gray-500 mt-1">Happy Farmers</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl md:text-4xl font-bold text-white counter" data-target="180">0</div>
+                                <div class="text-sm text-gray-500 mt-1">Tractors Available</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl md:text-4xl font-bold text-white counter" data-target="50">0</div>
+                                <div class="text-sm text-gray-500 mt-1">Districts Covered</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3D Tractor Visual -->
+                    <div class="scroll-reveal relative flex items-center justify-center" style="transition-delay: 200ms">
+                        <div class="tractor-3d relative w-full max-w-lg">
+                            <!-- Tractor Image Card -->
+                            <div class="relative rounded-3xl overflow-hidden glass border border-primaryLight/20 shadow-2xl">
+                                <img src="https://picsum.photos/seed/hero-tractor-green/600/500.jpg" alt="Premium Tractor" class="w-full h-80 md:h-96 object-cover"/>
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent"></div>
+                                <div class="absolute bottom-6 left-6 right-6">
+                                    <div class="glass rounded-2xl p-4 flex items-center justify-between">
+                                        <div>
+                                            <p class="text-xs text-gray-400 mb-1">Starting from</p>
+                                            <p class="text-2xl font-bold text-accent">₹499<span class="text-sm text-gray-400 font-normal">/hr</span></p>
+                                        </div>
+                                        <button onclick="navigateTo('fleet')" class="btn-primary text-primaryDark font-semibold text-sm px-5 py-2.5 rounded-xl">
+                                            Book Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Badge -->
+                            <div class="absolute -top-4 -right-4 animate-bounce-gentle">
+                                <div class="w-20 h-20 rounded-full bg-accent flex items-center justify-center shadow-xl">
+                                    <div class="text-center">
+                                        <span class="iconify text-primaryDark text-2xl" data-icon="mdi:percent"></span>
+                                        <p class="text-[10px] font-bold text-primaryDark">OFF</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Info Cards -->
+                            <div class="absolute -bottom-6 -left-6 animate-float-delay hidden md:block">
+                                <div class="glass rounded-2xl p-3 flex items-center gap-3 shadow-xl">
+                                    <div class="w-10 h-10 rounded-xl bg-forest/20 flex items-center justify-center">
+                                        <span class="iconify text-forest text-xl" data-icon="mdi:shield-check"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-white">Insured</p>
+                                        <p class="text-[10px] text-gray-400">Full coverage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trusted By -->
+        <section class="py-16 border-y border-primaryLight/10">
+            <div class="max-w-7xl mx-auto px-6">
+                <p class="text-center text-sm text-gray-500 mb-8 uppercase tracking-widest">Trusted by leading agricultural organizations</p>
+                <div class="flex flex-wrap items-center justify-center gap-12 opacity-50">
+                    <div class="flex items-center gap-2 text-gray-400"><span class="iconify text-3xl" data-icon="mdi:silo"></span><span class="font-semibold">AgriCo</span></div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="iconify text-3xl" data-icon="mdi:grain"></span><span class="font-semibold">FarmFirst</span></div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="iconify text-3xl" data-icon="mdi:barley"></span><span class="font-semibold">CropCare</span></div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="iconify text-3xl" data-icon="mdi:greenhouse"></span><span class="font-semibold">GreenHarvest</span></div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="iconify text-3xl" data-icon="mdi:food-variant"></span><span class="font-semibold">KisanPro</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="py-24 relative">
+            <div class="absolute top-1/2 left-0 w-[400px] h-[400px] bg-forest/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16 scroll-reveal">
+                    <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-forest mb-4">Why Choose Us</span>
+                    <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">
+                        <span class="text-white">Farming Made</span> <span class="text-gradient-accent">Simple</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">We handle the logistics, you handle the harvest. Our platform makes renting agricultural equipment as easy as ordering groceries.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${[
+                        { icon: 'mdi:truck-delivery', title: 'Doorstep Delivery', desc: 'Tractor delivered right to your field. No pickup hassle, no transport costs.', color: 'forest' },
+                        { icon: 'mdi:currency-inr', title: 'Affordable Pricing', desc: 'Pay by the hour with no hidden charges. Transparent pricing for every farmer.', color: 'accent' },
+                        { icon: 'mdi:wrench', title: 'Expert Maintenance', desc: 'All tractors serviced and maintained by certified mechanics before every rental.', color: 'forest' },
+                        { icon: 'mdi:shield-check', title: 'Full Insurance', desc: 'Every rental comes with comprehensive insurance. Farm with confidence and peace of mind.', color: 'accent' },
+                        { icon: 'mdi:headset', title: '24/7 Support', desc: 'Our agricultural experts are available round the clock. Help is always a call away.', color: 'forest' },
+                        { icon: 'mdi:cellphone-check', title: 'Easy Booking', desc: 'Book from your phone in under 2 minutes. No paperwork, no waiting.', color: 'accent' },
+                    ].map((f, i) => `
+                        <div class="scroll-reveal group" style="transition-delay: ${i * 80}ms">
+                            <div class="glass-light rounded-2xl p-7 hover:bg-primaryLight/15 transition-all duration-300 h-full border border-transparent hover:border-primaryLight/20">
+                                <div class="w-14 h-14 rounded-2xl bg-${f.color}/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                                    <span class="iconify text-3xl text-${f.color}" data-icon="${f.icon}"></span>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white mb-3">${f.title}</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">${f.desc}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Tractors -->
+        <section class="py-24 relative bg-primaryDark/30">
+            <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 scroll-reveal">
+                    <div>
+                        <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-accent mb-4">Featured Fleet</span>
+                        <h2 class="text-3xl md:text-5xl font-bold tracking-tight">Popular <span class="text-gradient-leaf">Choices</span></h2>
+                    </div>
+                    <button onclick="navigateTo('fleet')" class="btn-secondary text-white font-medium text-sm px-6 py-3 rounded-xl mt-4 md:mt-0 flex items-center gap-2">
+                        View All <span class="iconify" data-icon="mdi:arrow-right"></span>
+                    </button>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${tractorsData.slice(0, 3).map((t, i) => tractorCard3D(t, i)).join('')}
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16 scroll-reveal">
+                    <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-forest mb-4">Farmer Stories</span>
+                    <h2 class="text-3xl md:text-5xl font-bold tracking-tight">Voices from the <span class="text-gradient-accent">Field</span></h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    ${[
+                        { name: 'Rajinder Singh', loc: 'Patiala, Punjab', text: 'TractorHub saved my harvest season. I rented a 75 HP tractor for 3 days and finished ploughing 15 acres. The booking was done in minutes!', rating: 5 },
+                        { name: 'Anitha Reddy', loc: 'Kurnool, AP', text: 'As a small farmer, buying a tractor was impossible. Now I rent whenever I need one. The doorstep delivery is a game changer.', rating: 5 },
+                        { name: 'Manoj Kumar', loc: 'Karnal, Haryana', text: 'Excellent condition tractors and very polite staff. The insurance coverage gives me confidence. Highly recommend for every farmer.', rating: 5 },
+                    ].map((t, i) => `
+                        <div class="scroll-reveal" style="transition-delay: ${i * 100}ms">
+                            <div class="glass-light rounded-2xl p-7 h-full flex flex-col">
+                                <div class="flex gap-1 mb-4">${'<span class="iconify text-accent" data-icon="mdi:star"></span>'.repeat(t.rating)}</div>
+                                <p class="text-gray-300 text-sm leading-relaxed flex-1 mb-6">"${t.text}"</p>
+                                <div class="flex items-center gap-3 pt-4 border-t border-primaryLight/10">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-forest to-primaryLight flex items-center justify-center text-white font-bold text-sm">${t.name[0]}</div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-white">${t.name}</p>
+                                        <p class="text-xs text-gray-500">${t.loc}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary via-primaryLight to-primary opacity-20"></div>
+            <div class="absolute top-0 left-1/2 w-[600px] h-[300px] bg-accent/10 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="max-w-4xl mx-auto px-6 text-center relative scroll-reveal">
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-6">Ready to <span class="text-gradient-accent">Power</span> Your Farm?</h2>
+                <p class="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">Join thousands of farmers who've already simplified their operations. Book your first tractor today and get 20% off.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="navigateTo('fleet')" class="btn-primary text-primaryDark font-bold text-lg px-10 py-4 rounded-2xl flex items-center gap-3 shadow-xl">
+                        <span class="iconify text-2xl" data-icon="mdi:tractor-variant"></span>
+                        Rent a Tractor Now
+                    </button>
+                    <button onclick="navigateTo('contact')" class="btn-secondary text-white font-medium text-lg px-10 py-4 rounded-2xl flex items-center gap-3">
+                        <span class="iconify text-xl" data-icon="mdi:phone"></span>
+                        Call Us
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>`;
+}
+
+// ============================================================
+// FLEET PAGE
+// ============================================================
+function renderFleet() {
+    return `
+    <div class="page-content">
+        <section class="pt-32 pb-8 relative">
+            <div class="absolute top-0 left-1/3 w-[500px] h-[400px] bg-primaryLight/8 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="scroll-reveal">
+                    <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-forest mb-4">Our Fleet</span>
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Browse <span class="text-gradient-accent">Tractors</span></h1>
+                    <p class="text-gray-400 text-lg max-w-2xl">Find the perfect tractor for your farming needs. Filter by horsepower, brand, or price to find your match.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <section class="py-6 sticky top-20 z-30 bg-dark-900/80 backdrop-blur-xl border-b border-primaryLight/10">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="filterTractors('all')" class="filter-btn active px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-filter="all">All</button>
+                    <button onclick="filterTractors('small')" class="filter-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-filter="small">Under 50 HP</button>
+                    <button onclick="filterTractors('medium')" class="filter-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-filter="medium">50-75 HP</button>
+                    <button onclick="filterTractors('heavy')" class="filter-btn px-5 py-2.5 rounded-xl text-sm font-medium transition-all" data-filter="heavy">75+ HP</button>
+                    <div class="flex-1"></div>
+                    <div class="relative">
+                        <span class="iconify absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" data-icon="mdi:magnify"></span>
+                        <input type="text" id="tractor-search" oninput="searchTractors()" placeholder="Search tractors..." class="pl-10 pr-4 py-2.5 rounded-xl glass text-sm text-white placeholder-gray-500 w-48 md:w-64 border border-primaryLight/10 focus:border-forest"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tractor Grid -->
+        <section class="py-12">
+            <div class="max-w-7xl mx-auto px-6">
+                <div id="fleet-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${tractorsData.map((t, i) => tractorCard3D(t, i)).join('')}
+                </div>
+                <div id="no-results" class="hidden text-center py-20">
+                    <span class="iconify text-6xl text-gray-600 mb-4" data-icon="mdi:tractor-variant"></span>
+                    <p class="text-gray-400 text-lg">No tractors found matching your criteria.</p>
+                </6>
+            </div>
+        </section>
+    </div>`;
+}
+
+// ============================================================
+// HOW IT WORKS PAGE
+// ============================================================
+function renderHowItWorks() {
+    const steps = [
+        { num: '01', icon: 'mdi:cellphoneBsearch', title: 'Search & Select', desc: 'Browse our fleet of 180+ tractors. Filter by horsepower, brand, or price. Compare specs and read reviews from fellow farmers.' },
+        { num: '02', icon: 'mdi:calendar-check', title: 'Book & Schedule', desc: 'Pick your date and time slot. No paperwork needed — book directly from your phone in under 2 minutes. Instant confirmation.' },
+        { num: '03', icon: 'mdi:truck-delivery', title: 'We Deliver to Your Field', desc: 'Our team delivers the tractor right to your farm gate. Fuel-filled, inspected, and ready to work. Zero pickup hassle.' },
+        { num: '04', icon: 'mdi:steering', title: 'Farm with Power', desc: 'Operate the tractor for your task. Our 24/7 support line is always available if you need any assistance during operation.' },
+        { num: '05', icon: 'mdi:handshake', title: 'Return & Rate', desc: 'We pick up the tractor when you\'re done. Rate your experience and help the community. Pay only for hours used.' },
+    ];
+
+    return `
+    <div class="page-content">
+        <section class="pt-32 pb-16 relative">
+            <div class="absolute top-20 right-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <div class="scroll-reveal">
+                    <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-accent mb-4">Simple Process</span>
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">How <span class="text-gradient-leaf">It Works</span></h1>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">From booking to harvesting in 5 simple steps. No complicated paperwork, no waiting — just farming made easy.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Steps Timeline -->
+        <section class="py-16 relative">
+            <div class="max-w-4xl mx-auto px-6">
+                ${steps.map((s, i) => `
+                    <div class="scroll-reveal flex gap-6 md:gap-10 mb-12 last:mb-0" style="transition-delay: ${i * 100}ms">
+                        <!-- Timeline Line -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primaryLight to-primary flex items-center justify-center flex-shrink-0 shadow-lg relative z-10">
+                                <span class="text-accent font-bold text-lg">${s.num}</span>
+                            </div>
+                            ${i < steps.length - 1 ? '<div class="w-0.5 flex-1 bg-gradient-to-b from-primaryLight/40 to-transparent mt-2"></div>' : ''}
+                        </div>
+                        <!-- Content -->
+                        <div class="pb-12">
+                            <div class="glass-light rounded-2xl p-7 border border-primaryLight/10 hover:border-primaryLight/20 transition-all duration-300 group">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="iconify text-2xl text-forest group-hover:text-accent transition-colors" data-icon="${s.icon}"></span>
+                                    <h3 class="text-xl font-semibold text-white">${s.title}</h3>
+                                </div>
+                                <p class="text-gray-400 leading-relaxed">${s.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section class="py-24 bg-primaryDark/30 relative">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-16 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Why Rent vs Buy?</h2>
+                    <p class="text-gray-400">See how renting saves you lakhs every year</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 scroll-reveal">
+                    <!-- Buy -->
+                    <div class="rounded-2xl border border-red-500/20 bg-red-500/5 p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="iconify text-3xl text-red-400" data-icon="mdi:close-circle"></span>
+                            <h3 class="text-xl font-semibold text-red-400">Buying a Tractor</h3>
+                        </div>
+                        <ul class="space-y-4">
+                            ${['₹5-10 lakh upfront cost', '₹50K+ annual maintenance', 'Depreciation ₹1L+/year', 'Idle 70% of the year', 'Insurance + registration costs', 'Resale value drops 40% in 5 yrs'].map(item => `
+                                <li class="flex items-start gap-3 text-gray-400 text-sm">
+                                    <span class="iconify text-red-400 mt-0.5 flex-shrink-0" data-icon="mdi:close"></span>
+                                    ${item}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="mt-6 pt-4 border-t border-red-500/10">
+                            <p class="text-red-400 font-bold text-lg">Total: ₹7-12 Lakh/year</p>
+                        </div>
+                    </div>
+                    <!-- Rent -->
+                    <div class="rounded-2xl border border-forest/30 bg-forest/5 p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="iconify text-3xl text-forest" data-icon="mdi:check-circle"></span>
+                            <h3 class="text-xl font-semibold text-forest">Renting from TractorHub</h3>
+                        </div>
+                        <ul class="space-y-4">
+                            ${['Zero upfront investment', 'Maintenance included free', 'No depreciation worry', 'Use only when needed', 'Insurance included', 'Upgrade to newer models anytime'].map(item => `
+                                <li class="flex items-start gap-3 text-gray-300 text-sm">
+                                    <span class="iconify text-forest mt-0.5 flex-shrink-0" data-icon="mdi:check"></span>
+                                    ${item}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="mt-6 pt-4 border-t border-forest/10">
+                            <p class="text-forest font-bold text-lg">Total: ₹50-80K/year</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="py-24">
+            <div class="max-w-3xl mx-auto px-6">
+                <div class="text-center mb-12 scroll-reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Frequently Asked <span class="text-gradient-accent">Questions</span></h2>
+                </div>
+                <div class="space-y-3">
+                    ${[
+                        { q: 'What documents do I need to rent a tractor?', a: 'Just a valid Aadhaar card and your farm land record. No heavy paperwork — we keep it simple for farmers.' },
+                        { q: 'Is fuel included in the rental price?', a: 'Fuel is not included in the hourly rate. The tractor is delivered with a full tank, and you refill before return. We also offer fuel-inclusive packages.' },
+                        { q: 'What if the tractor breaks down?', a: 'Call our 24/7 helpline immediately. We\'ll dispatch a replacement tractor within 2 hours in most service areas. You won\'t be charged for downtime.' },
+                        { q: 'Can I rent for multiple days?', a: 'Absolutely! We offer daily, weekly, and monthly packages with increasing discounts. The longer you rent, the more you save.' },
+                        { q: 'Do you provide an operator/driver?', a: 'Yes, trained operators are available for an additional ₹199/hour. All our operators are experienced with 5+ years of farming operations.' },
+                    ].map((faq, i) => `
+                        <div class="scroll-reveal faq-item" style="transition-delay: ${i * 60}ms">
+                            <button onclick="toggleFaq(this)" class="w-full glass-light rounded-xl p-5 text-left flex items-center justify-between gap-4 hover:bg-primaryLight/10 transition-colors">
+                                <span class="font-medium text-white">${faq.q}</span>
+                                <span class="iconify text-forest text-xl flex-shrink-0 faq-icon transition-transform duration-300" data-icon="mdi:chevron-down"></span>
+                            </button>
+                            <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300">
+                                <div class="px-5 pb-5 pt-2 text-gray-400 text-sm leading-relaxed">${faq.a}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </section>
+    </div>`;
+}
+
+// ============================================================
+// PRICING PAGE
+// ============================================================
+function renderPricing() {
+    const plans = [
+        {
+            name: 'Hourly', price: '499', unit: '/hour', desc: 'Perfect for quick tasks',
+            features: ['Single task rentals', 'Doorstep delivery', 'Basic insurance', '8 AM - 8 PM support', 'Fuel separate'],
+            featured: false, icon: 'mdi:clock-outline'
+        },
+        {
+            name: 'Daily', price: '3,999', unit: '/day', desc: 'Best for seasonal work', badge: 'Most Popular',
+            features: ['Full day access (10 hrs)', 'Free delivery & pickup', 'Comprehensive insurance', '24/7 phone support', 'Fuel separate', 'Operator available'],
+            featured: true, icon: 'mdi:calendar-today'
+        },
+        {
+            name: 'Weekly', price: '19,999', unit: '/week', desc: 'Maximum savings', badge: 'Best Value',
+            features: ['7-day unlimited (80 hrs)', 'Free delivery & pickup', 'Comprehensive insurance', '24/7 priority support', 'Free operator for 1 day', 'Fuel package available', 'Switch tractors free'],
+            featured: false, icon: 'mdi:calendar-week'
+        },
+    ];
+
+    return `
+    <div class="page-content">
+        <section class="pt-32 pb-16 relative">
+            <div class="absolute top-20 right-0 w-[500px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <div class="scroll-reveal">
+                    <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-accent mb-4">Transparent Pricing</span>
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Simple <span class="text-gradient-accent">Pricing</span></h1>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">No hidden charges, no surprises. Pay only for what you use. All prices include GST.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Cards -->
+        <section class="py-12 pb-24">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="grid md:grid-cols-3 gap-6 items-start">
+                    ${plans.map((p, i) => `
+                        <div class="scroll-reveal pricing-card ${p.featured ? 'pricing-featured' : ''}" style="transition-delay: ${i * 100}ms">
+                            <div class="rounded-2xl overflow-hidden ${p.featured ? 'bg-gradient-to-b from-primaryLight/20 to-dark-800' : 'glass-light'} h-full flex flex-col">
+                                <div class="p-8">
+                                    ${p.badge ? `<div class="inline-flex px-3 py-1 rounded-full bg-accent/20 text-accent text-xs font-bold mb-4">${p.badge}</div>` : '<div class="mb-4 h-5"></div>'}
+                                    <div class="w-12 h-12 rounded-xl ${p.featured ? 'bg-accent/20' : 'bg-forest/10'} flex items-center justify-center mb-4">
+                                        <span class="iconify text-2xl ${p.featured ? 'text-accent' : 'text-forest'}" data-icon="${p.icon}"></span>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white mb-1">${p.name}</h3>
+                                    <p class="text-sm text-gray-500 mb-6">${p.desc}</p>
+                                    <div class="flex items-baseline gap-1 mb-8">
+                                        <span class="text-sm text-gray-500">₹</span>
+                                        <span class="text-5xl font-bold ${p.featured ? 'text-accent' : 'text-white'}">${p.price}</span>
+                                        <span class="text-gray-500 text-sm">${p.unit}</span>
+                                    </div>
+                                    <button onclick="handleChoosePlan('${p.name}')" class="${p.featured ? 'btn-primary text-primaryDark' : 'btn-secondary text-white'} w-full font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2">
+                                        <span class="iconify" data-icon="mdi:cart-plus"></span>
+                                        Choose Plan
+                                    </button>
+                                </div>
+                                <div class="px-8 pb-8 pt-4 border-t border-primaryLight/10 flex-1">
+                                    <p class="text-xs font-medium text-gray-500 mb-4 uppercase tracking-wider">Includes</p>
+                                    <ul class="space-y-3">
+                                        ${p.features.map(f => `
+                                            <li class="flex items-center gap-2 text-sm text-gray-300">
+                                                <span class="iconify text-forest text-base flex-shrink-0" data-icon="mdi:check"></span>
+                                                ${f}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </section>
+
+        <!-- Add-ons -->
+        <section class="py-24 bg-primaryDark/30">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-12 scroll-reveal">
+                    <h2 class="text-3xl font-bold tracking-tight mb-4">Add-on <span class="text-gradient-leaf">Services</span></h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    ${[
+                        { icon: 'mdi:account-hard-hat', title: 'Expert Operator', price: '₹199/hr', desc: 'Trained driver with 5+ years experience' },
+                        { icon: 'mdi:gas-station', title: 'Fuel Package', price: '₹99/L', desc: 'Pre-paid fuel — no refill hassle' },
+                        { icon: 'mdi:attachment', title: 'Implement Attachment', price: '₹299/attach', desc: 'Plough, harrow, cultivator, and more' },
+                    ].map((a, i) => `
+                        <div class="scroll-reveal glass-light rounded-2xl p-7 text-center border border-primaryLight/10" style="transition-delay: ${i * 80}ms">
+                            <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                                <span class="iconify text-2xl text-accent" data-icon="${a.icon}"></span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white mb-1">${a.title}</h3>
+                            <p class="text-accent font-bold text-xl mb-2">${a.price}</p>
+                            <p class="text-gray-400 text-sm">${a.desc}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </section>
+    </div>`;
+}
+
+// ============================================================
+// CONTACT PAGE
+// ============================================================
+function renderContact() {
+    return `
+    <div class="page-content">
+        <section class="pt-32 pb-16 relative">
+            <div class="absolute top-20 left-1/3 w-[400px] h-[400px] bg-forest/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="scroll-reveal">
+                    <span class="inline-block px-4 py-1.5 rounded-full glass text-xs font-medium text-forest mb-4">Get in Touch</span>
+                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">Contact <span class="text-gradient-accent">Us</span></h1>
+                    <p class="text-gray-400 text-lg max-w-2xl">Have questions? Need help booking? Our team of agricultural experts is here to assist you.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-12 pb-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="grid lg:grid-cols-5 gap-8">
+                    <!-- Contact Info -->
+                    <div class="lg:col-span-2 space-y-6">
+                        ${[
+                            { icon: 'mdi:phone', title: 'Call Us', lines: ['+91 98765 43210', '+91 87654 32109'], color: 'forest' },
+                            { icon: 'mdi:email', title: 'Email Us', lines: ['rent@tractorhub.in', 'support@tractorhub.in'], color: 'accent' },
+                            { icon: 'mdi:map-marker', title: 'Visit Us', lines: ['TractorHub HQ', 'GT Road, Karnal', 'Haryana 132001, India'], color: 'forest' },
+                            { icon: 'mdi:clock', title: 'Working Hours', lines: ['Mon-Sat: 6 AM - 10 PM', 'Sun: 8 AM - 6 PM', 'Helpline: 24/7'], color: 'accent' },
+                        ].map((c, i) => `
+                            <div class="scroll-reveal glass-light rounded-2xl p-6 border border-primaryLight/10" style="transition-delay: ${i * 80}ms">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-${c.color}/10 flex items-center justify-center">
+                                        <span class="iconify text-${c.color} text-xl" data-icon="${c.icon}"></span>
+                                    </div>
+                                    <h3 class="font-semibold text-white">${c.title}</h3>
+                                </div>
+                                ${c.lines.map(l => `<p class="text-gray-400 text-sm ml-13">${l}</p>`).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="lg:col-span-3 scroll-reveal" style="transition-delay: 200ms">
+                        <div class="glass-light rounded-2xl p-8 border border-primaryLight/10">
+                            <h3 class="text-xl font-semibold text-white mb-6">Send us a Message</h3>
+                            <form onsubmit="handleContactSubmit(event)" class="space-y-5">
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="text-sm text-gray-400 mb-2 block">Full Name *</label>
+                                        <input type="text" required placeholder="Your name" class="w-full px-4 py-3 rounded-xl glass text-white text-sm placeholder-gray-500 border border-primaryLight/10"/>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm text-gray-400 mb-2 block">Phone Number *</label>
+                                        <input type="tel" required placeholder="+91 XXXXX XXXXX" class="w-full px-4 py-3 rounded-xl glass text-white text-sm placeholder-gray-500 border border-primaryLight/10"/>
+                                    </div>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="text-sm text-gray-400 mb-2 block">Email</label>
+                                        <input type="email" placeholder="your@email.com" class="w-full px-4 py-3 rounded-xl glass text-white text-sm placeholder-gray-500 border border-primaryLight/10"/>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm text-gray-400 mb-2 block">District</label>
+                                        <select class="w-full px-4 py-3 rounded-xl glass text-white text-sm border border-primaryLight/10 bg-transparent">
+                                            <option value="" class="bg-dark-900">Select district</option>
+                                            <option value="karnal" class="bg-dark-900">Karnal</option>
+                                            <option value="panipat" class="bg-dark-900">Panipat</option>
+                                            <option value="kurukshetra" class="bg-dark-900">Kurukshetra</option>
+                                            <option value="ambala" class="bg-dark-900">Ambala</option>
+                                            <option value="hisar" class="bg-dark-900">Hisar</option>
+                                            <option value="other" class="bg-dark-900">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400 mb-2 block">Subject</label>
+                                    <select class="w-full px-4 py-3 rounded-xl glass text-white text-sm border border-primaryLight/10 bg-transparent">
+                                        <option value="" class="bg-dark-900">What is this about?</option>
+                                        <option value="booking" class="bg-dark-900">Booking Inquiry</option>
+                                        <option value="support" class="bg-dark-900">Technical Support</option>
+                                        <option value="partnership" class="bg-dark-900">Partnership</option>
+                                        <option value="complaint" class="bg-dark-900">Complaint</option>
+                                        <option value="other" class="bg-dark-900">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400 mb-2 block">Message *</label>
+                                    <textarea required rows="5" placeholder="Tell us how we can help..." class="w-full px-4 py-3 rounded-xl glass text-white text-sm placeholder-gray-500 border border-primaryLight/10 resize-none"></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary text-primaryDark font-bold w-full py-4 rounded-xl flex items-center justify-center gap-3 text-base">
+                                    <span class="iconify text-xl" data-icon="mdi:send"></span>
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map Placeholder -->
+        <section class="py-12">
+            <div class="max-w-6xl mx-auto px-6 scroll-reveal">
+                <div class="rounded-2xl overflow-hidden glass-light border border-primaryLight/10 h-80 relative">
+                    <img src="https://picsum.photos/seed/india-farm-map/1200/400.jpg" alt="Service Area Map" class="w-full h-full object-cover opacity-40"/>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="glass rounded-2xl p-6 text-center">
+                            <span class="iconify text-4xl text-accent mb-2" data-icon="mdi:map-marker-radius"></span>
+                            <p class="text-white font-semibold">Serving 50+ Districts</p>
+                            <p class="text-gray-400 text-sm">Across Haryana, Punjab, UP & Rajasthan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>`;
+}
+
+// ============================================================
+// TRACTOR DATA
+// ============================================================
+const tractorsData = [
+    { id: 1, name: 'Mahindra 575 DI', brand: 'Mahindra', hp: 45, transmission: '2WD', acreage: 5, fuel: 5.5, price: 499, available: true, featured: true, category: 'small', image: 'https://www.mahindratractor.com/sites/default/files/styles/1532x912/public/2023-09/16.webp?itok=6q2Uuufq' },
+    { id: 2, name: 'Swaraj 744 FE', brand: 'Swaraj', hp: 48, transmission: '2WD', acreage: 6, fuel: 5.8, price: 529, available: true, featured: false, category: 'small', image: 'https://www.swarajtractors.com/sites/default/files/images/swaraj_744_FE_633x512px_1010923.png' },
+    { id: 3, name: 'John Deere 5310', brand: 'John Deere', hp: 55, transmission: '2WD', acreage: 8, fuel: 6.2, price: 699, available: true, featured: true, category: 'medium', image: 'https://cdn.motorfloor.com/vehicles/tractor/john-deere-5310-powertech-4wd.jpg' },
+    { id: 4, name: 'TAFE 45 DI', brand: 'TAFE', hp: 45, transmission: '2WD', acreage: 5, fuel: 5.3, price: 479, available: true, featured: false, category: 'small', image: 'https://tafetractors.com/_next/image?url=https:%2F%2Fproject-uploads-eu-west-1.s3.eu-west-1.amazonaws.com%2Ftafe-tractors%2Fproduction%2FUntitled_design_71_66aab3e34f.png&w=2048&q=75' },
+    { id: 5, name: 'Mahindra Arjun 605', brand: 'Mahindra', hp: 60, transmission: '2WD', acreage: 9, fuel: 7, price: 749, available: true, featured: true, category: 'medium', image: 'https://assets.khetigaadi.com/tr:h-350,w-500/new-tractor/Mahindra-ARJUN-605-DI-MS-V11735533876_E_O6PF8Fx.png' },
+    { id: 6, name: 'New Holland 3600', brand: 'New Holland', hp: 50, transmission: '2WD', acreage: 7, fuel: 6, price: 649, available: false, featured: false, category: 'medium', image: 'https://5.imimg.com/data5/KM/KN/MY-46044603/new-holland-3600-2-tx-tractor-500x500.png' },
+    { id: 7, name: 'Kubota MU5501', brand: 'Kubota', hp: 55, transmission: '4WD', acreage: 8, fuel: 5.8, price: 799, available: true, featured: false, category: 'medium', image: 'https://tse4.mm.bing.net/th/id/OIP.Ekc5hjA5bXOi4G4Swv3DpAHaFM?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' },
+    { id: 8, name: 'John Deere 6120B', brand: 'John Deere', hp: 120, transmission: '4WD', acreage: 18, fuel: 12, price: 1499, available: true, featured: true, category: 'heavy', image: 'https://tse3.mm.bing.net/th/id/OIP.O3alzi8uUNnVJephGZXtnwHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' },
+    { id: 9, name: 'New Holland TD5.90', brand: 'New Holland', hp: 90, transmission: '4WD', acreage: 14, fuel: 10, price: 1199, available: true, featured: false, category: 'heavy', image: 'https://static2.aastatic.com.ar/files/variants/1200/0f29ff8af87348c3a2fd3164c633749a.jpg' },
+    { id: 10, name: 'Mahindra Novo 75', brand: 'Mahindra', hp: 75, transmission: '2WD', acreage: 12, fuel: 8.5, price: 899, available: true, featured: false, category: 'heavy', image: 'https://5.imimg.com/data5/GD/TS/ZX/GLADMIN-12/novo-755.jpg' },
+    { id: 11, name: 'Escorts Farmtrac 60', brand: 'Escorts', hp: 60, transmission: '2WD', acreage: 9, fuel: 6.8, price: 699, available: true, featured: false, category: 'medium', image: 'https://5.imimg.com/data5/SELLER/Default/2023/10/353506498/TU/NK/DY/99146799/diesel-generator-30kva-1000x1000.jpeg' },
+    { id: 12, name: 'Swaraj 963 FE', brand: 'Swaraj', hp: 63, transmission: '2WD', acreage: 10, fuel: 7.2, price: 799, available: false, featured: false, category: 'medium', image: 'https://www.swarajtractors.com/sites/default/files/images/960FE_633x512.png' },
+];
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+let currentFilter = 'all';
+
+function filterTractors(category) {
+    currentFilter = category;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === category);
+        if (btn.dataset.filter === category) {
+            btn.className = 'filter-btn active px-5 py-2.5 rounded-xl text-sm font-medium bg-forest/20 text-forest border border-forest/30';
+        } else {
+            btn.className = 'filter-btn px-5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white glass';
+        }
+    });
+    applyFilters();
+}
+
+function searchTractors() {
+    applyFilters();
+}
+
+function applyFilters() {
+    const search = (document.getElementById('tractor-search')?.value || '').toLowerCase();
+    const grid = document.getElementById('fleet-grid');
+    const noResults = document.getElementById('no-results');
+    if (!grid) return;
+
+    const filtered = tractorsData.filter(t => {
+        const matchCategory = currentFilter === 'all' || t.category === currentFilter;
+        const matchSearch = !search || t.name.toLowerCase().includes(search) || t.brand.toLowerCase().includes(search);
+        return matchCategory && matchSearch;
+    });
+
+    grid.innerHTML = filtered.length > 0
+        ? filtered.map((t, i) => tractorCard3D(t, i)).join('')
+        : '';
+
+    if (noResults) noResults.classList.toggle('hidden', filtered.length > 0);
+    initScrollReveal();
+    init3DCards();
+}
+
+function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const icon = btn.querySelector('.faq-icon');
+    const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+    // Close all
+    document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = '0px');
+    document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+    if (!isOpen) {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+
+function handleContactSubmit(e) {
+    e.preventDefault();
+    showToast('Message sent successfully! We\'ll call you back within 2 hours.');
+    e.target.reset();
+}
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+function initScrollReveal() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+}
+
+// ============================================================
+// COUNTER ANIMATION
+// ============================================================
+function initCounters() {
+    const counters = document.querySelectorAll('.counter[data-target]');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseInt(el.dataset.target);
+                let current = 0;
+                const increment = target / 60;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) { current = target; clearInterval(timer); }
+                    el.textContent = Math.floor(current).toLocaleString() + (target >= 1000 ? '+' : '+');
+                }, 25);
+                observer.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(el => observer.observe(el));
+}
+
+// ============================================================
+// 3D CARD TILT
+// ============================================================
+function init3DCards() {
+    document.querySelectorAll('.card-3d').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / centerY * -8;
+            const rotateY = (x - centerX) / centerX * 8;
+            const inner = card.querySelector('.card-3d-inner');
+            if (inner) inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            const inner = card.querySelector('.card-3d-inner');
+            if (inner) inner.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px)';
+        });
+    });
+}
+
+// ============================================================
+// PARALLAX
+// ============================================================
+function initParallax() {
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        document.querySelectorAll('.parallax-layer').forEach(el => {
+            const speed = el.dataset.speed || 0.5;
+            el.style.transform = `translateY(${scrollY * speed}px)`;
+        });
+    }, { passive: true });
+}
+
+// ============================================================
+// NAVBAR SCROLL EFFECT
+// ============================================================
+window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('bg-dark-900/90', 'backdrop-blur-xl', 'border-b', 'border-primaryLight/10', 'shadow-xl');
+    } else {
+        navbar.classList.remove('bg-dark-900/90', 'backdrop-blur-xl', 'border-b', 'border-primaryLight/10', 'shadow-xl');
+    }
+}, { passive: true });
+
+// ============================================================
+// AUTHENTICATION & USER PROFILE
+// ============================================================
+function getActiveUser() {
+    try {
+        const stored = localStorage.getItem('farmgo_user');
+        return stored ? JSON.parse(stored) : null;
+    } catch(e) {
+        return null;
+    }
+}
+
+function updateNavAuth() {
+    const user = getActiveUser();
+    const desktopSlot = document.getElementById('desktop-auth-slot');
+    const mobileSlot = document.getElementById('mobile-auth-slot');
+
+    if (!desktopSlot) return;
+
+    if (user) {
+        desktopSlot.innerHTML = `
+            <div class="relative" id="user-menu-wrapper">
+                <button type="button" onclick="toggleUserDropdown()" class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl glass hover:border-forest/50 transition-all border border-forest/20">
+                    <img src="${user.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80'}" alt="${user.name}" class="w-7 h-7 rounded-full object-cover border border-forest/40">
+                    <div class="text-left hidden lg:block">
+                        <div class="text-xs font-bold text-white leading-tight max-w-[120px] truncate">${user.name}</div>
+                        <div class="text-[10px] text-accent leading-tight">${user.role || 'Farmer'}</div>
+                    </div>
+                    <span class="iconify text-gray-400 text-sm" data-icon="mdi:chevron-down"></span>
+                </button>
+                <div id="user-dropdown-menu" class="user-dropdown absolute right-0 mt-2 w-60 rounded-2xl auth-glass p-2 border border-forest/25 shadow-2xl z-50">
+                    <div class="px-3 py-2 border-b border-white/10 mb-1">
+                        <p class="text-xs font-bold text-white truncate">${user.name}</p>
+                        <p class="text-[11px] text-gray-400 truncate">${user.email || user.phone || ''}</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-forest/20 text-forest">${user.role || 'Farmer'}</span>
+                    </div>
+                    <button onclick="showBookingsModal()" class="w-full text-left px-3 py-2 text-xs text-gray-200 hover:text-white hover:bg-forest/20 rounded-xl transition-all flex items-center gap-2">
+                        <span class="iconify text-forest text-base" data-icon="mdi:calendar-check"></span>
+                        <span>My Active Bookings</span>
+                        <span class="ml-auto text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded font-bold">2 Active</span>
+                    </button>
+                    <a href="login.html" class="w-full text-left px-3 py-2 text-xs text-gray-200 hover:text-white hover:bg-forest/20 rounded-xl transition-all flex items-center gap-2">
+                        <span class="iconify text-accent text-base" data-icon="mdi:account-switch"></span>
+                        <span>Switch Account</span>
+                    </a>
+                    <button onclick="logoutUser()" class="w-full text-left px-3 py-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all flex items-center gap-2 border-t border-white/5 mt-1">
+                        <span class="iconify text-base" data-icon="mdi:logout-variant"></span>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        if (mobileSlot) {
+            mobileSlot.innerHTML = `
+                <div class="p-3 rounded-2xl glass flex items-center gap-3">
+                    <img src="${user.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80'}" class="w-10 h-10 rounded-full object-cover border border-forest/40">
+                    <div class="flex-1 text-left">
+                        <div class="text-sm font-bold text-white truncate">${user.name}</div>
+                        <div class="text-xs text-accent">${user.role || 'Farmer'} • <span class="text-gray-400">${user.district || 'Karnal'}</span></div>
+                    </div>
+                </div>
+                <button onclick="showBookingsModal();toggleMobileMenu()" class="w-full py-2.5 rounded-xl glass text-center text-sm font-semibold text-white flex items-center justify-center gap-2">
+                    <span class="iconify text-forest" data-icon="mdi:calendar-check"></span>
+                    <span>My Active Bookings (2)</span>
+                </button>
+                <button onclick="logoutUser()" class="w-full py-2 rounded-xl text-center text-xs font-semibold text-red-400 hover:text-red-300 flex items-center justify-center gap-1.5">
+                    <span class="iconify" data-icon="mdi:logout"></span>
+                    <span>Sign Out</span>
+                </button>
+            `;
+        }
+    } else {
+        desktopSlot.innerHTML = `
+            <a href="login.html" class="hidden sm:inline-flex text-xs font-semibold text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-white/5 transition-all items-center gap-1.5">
+                <span class="iconify text-forest text-base" data-icon="mdi:login-variant"></span>
+                <span>Sign In</span>
+            </a>
+            <a href="signup.html" class="hidden sm:inline-flex text-xs font-semibold text-accent hover:text-accentLight border border-accent/40 hover:border-accent px-3 py-2 rounded-xl transition-all items-center gap-1.5">
+                <span class="iconify text-base" data-icon="mdi:account-plus-outline"></span>
+                <span>Sign Up</span>
+            </a>
+        `;
+
+        if (mobileSlot) {
+            mobileSlot.innerHTML = `
+                <a href="login.html" class="w-full py-2.5 rounded-xl glass text-center text-sm font-semibold text-white flex items-center justify-center gap-2">
+                    <span class="iconify text-forest" data-icon="mdi:login-variant"></span>
+                    <span>Farmer Sign In</span>
+                </a>
+                <a href="signup.html" class="w-full py-2.5 rounded-xl border border-accent/40 text-accent text-center text-sm font-semibold flex items-center justify-center gap-2">
+                    <span class="iconify" data-icon="mdi:account-plus-outline"></span>
+                    <span>Create Free Account</span>
+                </a>
+            `;
+        }
+    }
+}
+
+function toggleUserDropdown() {
+    const menu = document.getElementById('user-dropdown-menu');
+    if (menu) menu.classList.toggle('open');
+}
+
+window.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('user-menu-wrapper');
+    const menu = document.getElementById('user-dropdown-menu');
+    if (wrapper && menu && !wrapper.contains(e.target)) {
+        menu.classList.remove('open');
+    }
+});
+
+function logoutUser() {
+    localStorage.removeItem('farmgo_user');
+    updateNavAuth();
+    showToast('Signed out of FarmGo.', 'info');
+    if (currentPage === 'login' || currentPage === 'signup') {
+        navigateTo('home');
+    }
+}
+
+function showBookingsModal() {
+    const modal = document.getElementById('bookings-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
+
+function closeBookingsModal() {
+    const modal = document.getElementById('bookings-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+function handleRentTractor(tractorName) {
+    const user = getActiveUser();
+    if (user) {
+        showToast(`Booking initiated for ${tractorName}! Confirmation sent to ${user.name} (${user.phone}).`, 'success');
+        setTimeout(() => showBookingsModal(), 1200);
+    } else {
+        showToast(`Please sign in to rent ${tractorName}. Redirecting to Login...`, 'info');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1200);
+    }
+}
+
+function handleChoosePlan(planName) {
+    const user = getActiveUser();
+    if (user) {
+        showToast(`${planName} plan selected for ${user.name}! Activating discount rates.`, 'success');
+    } else {
+        showToast(`Please sign in to select ${planName} plan. Redirecting to Login...`, 'info');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1200);
+    }
+}
+
+// ============================================================
+// INLINE LOGIN & SIGNUP PAGES (SPA ROUTING)
+// ============================================================
+function renderLoginPage() {
+    const active = getActiveUser();
+    return `
+    <div class="page-content min-h-screen pt-32 pb-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <a onclick="navigateTo('home')" class="text-sm text-gray-400 hover:text-white flex items-center gap-2 cursor-pointer glass px-4 py-2 rounded-xl">
+                    <span class="iconify" data-icon="mdi:arrow-left"></span>
+                    <span>Back to Home</span>
+                </a>
+                <a href="login.html" class="text-xs text-accent hover:text-accentLight border border-accent/30 px-3 py-1.5 rounded-lg flex items-center gap-1">
+                    <span>Open Dedicated Full Page</span>
+                    <span class="iconify" data-icon="mdi:open-in-new"></span>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-8 items-center">
+                <!-- Info Column -->
+                <div class="md:col-span-5 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest/20 text-forest text-xs font-semibold">
+                        <span class="iconify" data-icon="mdi:tractor"></span>
+                        FarmGo Member Access
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Sign In to Your <span class="text-accent">Farm Account</span></h2>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Rent tractors, manage machinery dispatches, check hourly rates, and track active bookings across 50+ farming districts.
+                    </p>
+                    <div class="p-4 rounded-2xl auth-glass-card border border-primaryLight/20 space-y-2">
+                        <div class="text-xs font-bold text-white flex items-center gap-2">
+                            <span class="iconify text-accent" data-icon="mdi:lightning-bolt"></span>
+                            Quick Demo Login
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="fillInlineDemo('farmer')" class="flex-1 py-1.5 rounded-lg text-[11px] font-semibold bg-forest/20 text-forest hover:bg-forest/30">
+                                🌾 Farmer Demo
+                            </button>
+                            <button onclick="fillInlineDemo('owner')" class="flex-1 py-1.5 rounded-lg text-[11px] font-semibold bg-accent/20 text-accent hover:bg-accent/30">
+                                🚜 Owner Demo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="md:col-span-7">
+                    <div class="auth-glass rounded-3xl p-6 sm:p-8 border border-primaryLight/25">
+                        ${active ? `
+                            <div class="p-4 rounded-2xl bg-forest/20 border border-forest/30 mb-6 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-gray-300">Currently signed in as</p>
+                                    <p class="text-sm font-bold text-white">${active.name} (${active.role})</p>
+                                </div>
+                                <button onclick="logoutUser()" class="btn-secondary px-3 py-1 rounded-lg text-xs text-red-300">Sign Out</button>
+                            </div>
+                        ` : ''}
+
+                        <form onsubmit="handleInlineLogin(event)" class="space-y-4">
+                            <div>
+                                <label class="auth-label">Email or Phone Number</label>
+                                <input type="text" id="inline-login-id" required placeholder="e.g. rajesh@farmgo.in or 9876543210" class="auth-glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-gray-500">
+                            </div>
+                            <div>
+                                <label class="auth-label">Password</label>
+                                <input type="password" id="inline-login-pass" required placeholder="Enter password" class="auth-glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-gray-500">
+                            </div>
+                            <div class="flex justify-between items-center text-xs text-gray-400">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" checked class="w-3.5 h-3.5 rounded bg-dark-900 border-gray-600">
+                                    <span>Remember me</span>
+                                </label>
+                                <a href="login.html" class="text-accent hover:underline">Forgot password?</a>
+                            </div>
+                            <button type="submit" class="btn-primary text-primaryDark font-bold w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm">
+                                <span class="iconify text-lg" data-icon="mdi:login-variant"></span>
+                                <span>Sign In to FarmGo</span>
+                            </button>
+                        </form>
+
+                        <div class="mt-6 pt-4 border-t border-primaryLight/15 text-center">
+                            <p class="text-xs text-gray-400">
+                                Don't have an account? 
+                                <a onclick="navigateTo('signup')" class="text-accent font-bold hover:underline cursor-pointer ml-1">Create Account</a>
+                                or <a href="login.html" class="text-forest hover:underline ml-1">Open Dedicated Page</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderSignupPage() {
+    return `
+    <div class="page-content min-h-screen pt-32 pb-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <a onclick="navigateTo('home')" class="text-sm text-gray-400 hover:text-white flex items-center gap-2 cursor-pointer glass px-4 py-2 rounded-xl">
+                    <span class="iconify" data-icon="mdi:arrow-left"></span>
+                    <span>Back to Home</span>
+                </a>
+                <a href="signup.html" class="text-xs text-accent hover:text-accentLight border border-accent/30 px-3 py-1.5 rounded-lg flex items-center gap-1">
+                    <span>Open Dedicated Full Page</span>
+                    <span class="iconify" data-icon="mdi:open-in-new"></span>
+                </a>
+            </div>
+
+            <div class="auth-glass rounded-3xl p-6 sm:p-10 border border-primaryLight/25 max-w-2xl mx-auto">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-forest/20 text-forest text-xs font-semibold mb-2">
+                        <span class="iconify" data-icon="mdi:seed"></span>
+                        Join India's Smartest Agri Network
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Create Your <span class="text-accent">FarmGo</span> Account</h2>
+                    <p class="text-sm text-gray-400 mt-1">Register to start renting tractors at wholesale rates</p>
+                </div>
+
+                <form onsubmit="handleInlineSignup(event)" class="space-y-4">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="auth-label">Full Name *</label>
+                            <input type="text" id="inline-signup-name" required placeholder="Ramesh Patel" class="auth-glass-input w-full px-4 py-2.5 rounded-xl text-sm placeholder-gray-500">
+                        </div>
+                        <div>
+                            <label class="auth-label">Mobile Number *</label>
+                            <input type="tel" id="inline-signup-phone" required maxlength="10" placeholder="98765 43210" class="auth-glass-input w-full px-4 py-2.5 rounded-xl text-sm placeholder-gray-500 font-mono">
+                        </div>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="auth-label">Farming District *</label>
+                            <select id="inline-signup-district" required class="auth-glass-input w-full px-4 py-2.5 rounded-xl text-sm bg-dark-900 text-white">
+                                <option value="Karnal, Haryana">Karnal, Haryana</option>
+                                <option value="Panipat, Haryana">Panipat, Haryana</option>
+                                <option value="Ludhiana, Punjab">Ludhiana, Punjab</option>
+                                <option value="Meerut, Uttar Pradesh">Meerut, Uttar Pradesh</option>
+                                <option value="Kota, Rajasthan">Kota, Rajasthan</option>
+                                <option value="Other Districts">Other Districts</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="auth-label">Account Role *</label>
+                            <select id="inline-signup-role" required class="auth-glass-input w-full px-4 py-2.5 rounded-xl text-sm bg-dark-900 text-white">
+                                <option value="Farmer">Farmer (Renting Tractors)</option>
+                                <option value="Machine Owner">Machine Owner (Listing Machinery)</option>
+                                <option value="Driver/Operator">Driver / Machinery Operator</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="auth-label">Password *</label>
+                            <input type="password" id="inline-signup-pass" required minlength="6" placeholder="Min. 6 chars" class="auth-glass-input w-full px-4 py-2.5 rounded-xl text-sm placeholder-gray-500">
+                        </div>
+                        <div>
+                            <label class="auth-label">Confirm Password *</label>
+                            <input type="password" id="inline-signup-confirm" required minlength="6" placeholder="Confirm password" class="auth-glass-input w-full px-4 py-2.5 rounded-xl text-sm placeholder-gray-500">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-300">
+                            <input type="checkbox" required checked class="w-4 h-4 rounded bg-dark-900 border-gray-600 text-forest">
+                            <span>I agree to FarmGo's Terms of Service and Rental Policies</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary text-primaryDark font-bold w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm">
+                        <span class="iconify text-lg" data-icon="mdi:account-plus"></span>
+                        <span>Complete Registration</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 pt-4 border-t border-primaryLight/15 text-center">
+                    <p class="text-xs text-gray-400">
+                        Already have an account? 
+                        <a onclick="navigateTo('login')" class="text-accent font-bold hover:underline cursor-pointer ml-1">Sign In</a>
+                        or <a href="signup.html" class="text-forest hover:underline ml-1">Open Dedicated Page</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function fillInlineDemo(type) {
+    if (type === 'farmer') {
+        const idField = document.getElementById('inline-login-id');
+        const passField = document.getElementById('inline-login-pass');
+        if (idField) idField.value = 'rajesh.farmer@farmgo.in';
+        if (passField) passField.value = 'farmer2025';
+        showToast('Farmer demo credentials filled!', 'info');
+    } else {
+        const idField = document.getElementById('inline-login-id');
+        const passField = document.getElementById('inline-login-pass');
+        if (idField) idField.value = 'gurpreet.owner@farmgo.in';
+        if (passField) passField.value = 'tractor2025';
+        showToast('Fleet Owner demo credentials filled!', 'info');
+    }
+}
+
+function handleInlineLogin(e) {
+    e.preventDefault();
+    const id = document.getElementById('inline-login-id').value.trim();
+    const isOwner = id.toLowerCase().includes('owner');
+    const userData = {
+        name: isOwner ? 'Gurpreet Singh (Fleet Owner)' : 'Rajesh Patel (Farmer)',
+        email: id.includes('@') ? id : `${id}@user.farmgo.in`,
+        phone: id.includes('@') ? '+91 98765 43210' : id,
+        role: isOwner ? 'Machine Owner' : 'Farmer',
+        district: 'Karnal, Haryana',
+        avatar: isOwner 
+            ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80' 
+            : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+        token: 'token_' + Date.now()
+    };
+
+    localStorage.setItem('farmgo_user', JSON.stringify(userData));
+    updateNavAuth();
+    showToast(`Welcome back, ${userData.name}!`, 'success');
+    navigateTo('home');
+}
+
+function handleInlineSignup(e) {
+    e.preventDefault();
+    const name = document.getElementById('inline-signup-name').value.trim();
+    const phone = document.getElementById('inline-signup-phone').value.trim();
+    const district = document.getElementById('inline-signup-district').value;
+    const role = document.getElementById('inline-signup-role').value;
+    const p1 = document.getElementById('inline-signup-pass').value;
+    const p2 = document.getElementById('inline-signup-confirm').value;
+
+    if (p1 !== p2) {
+        showToast('Passwords do not match.', 'error');
+        return;
+    }
+
+    const userData = {
+        name: name,
+        phone: `+91 ${phone}`,
+        email: `${phone}@farmgo.in`,
+        role: role,
+        district: district,
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+        token: 'token_' + Date.now()
+    };
+
+    localStorage.setItem('farmgo_user', JSON.stringify(userData));
+    updateNavAuth();
+    showToast(`Account created for ${name}! Welcome to FarmGo.`, 'success');
+    navigateTo('home');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '') || 'home';
+    currentPage = pages[hash] ? hash : 'home';
+    renderPage();
+    updateNavLinks();
+    updateNavAuth();
+    // Set initial filter button style
+    filterTractors('all');
+});
+
+window.addEventListener('storage', () => {
+    updateNavAuth();
+});
+
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '') || 'home';
+    if (pages[hash] && hash !== currentPage) {
+        currentPage = hash;
+        renderPage();
+        updateNavLinks();
+    }
+});
+</script>
+</body>
+</html>

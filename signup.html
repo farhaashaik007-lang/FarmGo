@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign up for FarmGo - Create your account to rent tractors or list your agricultural equipment across India.">
+    <title>Create Account — FarmGo | Join India's Smart Tractor Rental Network</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom Auth Styles -->
+    <link rel="stylesheet" href="auth.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1B4332',
+                        primaryLight: '#2D6A4F',
+                        primaryDark: '#081C15',
+                        accent: '#D4A017',
+                        accentLight: '#E8B84B',
+                        earth: '#8B6914',
+                        soil: '#3E2723',
+                        wheat: '#F5DEB3',
+                        leaf: '#40916C',
+                        forest: '#52B788',
+                        dark: { 900: '#0B0F0E', 800: '#111916', 700: '#1A2520', 600: '#243530' }
+                    },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0B0F0E; color: #fff; overflow-x: hidden; min-height: 100vh; }
+        
+        .field-pattern { 
+            background-image: repeating-linear-gradient(90deg, rgba(45,106,79,0.03) 0px, rgba(45,106,79,0.03) 1px, transparent 1px, transparent 60px); 
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, #D4A017, #B8860B); 
+            position: relative; 
+            overflow: hidden; 
+            transition: all 0.3s ease;
+        }
+        .btn-primary::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: -100%; 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); 
+            transition: left 0.5s; 
+        }
+        .btn-primary:hover::before { left: 100%; }
+        .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 25px rgba(212,160,23,0.35); 
+        }
+
+        .glass { 
+            background: rgba(27,67,50,0.15); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(45,106,79,0.2); 
+        }
+
+        .toast { 
+            transform: translateX(120%); 
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); 
+        }
+        .toast.show { transform: translateX(0); }
+    </style>
+</head>
+<body class="field-pattern relative flex flex-col justify-between">
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3"></div>
+
+    <!-- Background Ambient Glows -->
+    <div class="fixed top-0 right-1/4 w-[550px] h-[550px] bg-primaryLight/15 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-0 left-1/4 w-[450px] h-[450px] bg-accent/10 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="w-full border-b border-primaryLight/15 bg-primaryDark/60 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-earth flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <span class="iconify text-primaryDark text-2xl" data-icon="mdi:tractor-variant"></span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight">Farm<span class="text-accent">Go</span></span>
+                    <span class="text-[10px] uppercase tracking-wider text-forest font-medium -mt-1">Agri Rental Hub</span>
+                </div>
+            </a>
+
+            <!-- Right Nav Links -->
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-sm text-gray-300 hover:text-white flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+                    <span class="iconify" data-icon="mdi:arrow-left"></span>
+                    <span>Back to Home</span>
+                </a>
+                <a href="login.html" class="text-sm font-medium text-forest hover:text-forest/80 border border-forest/30 hover:border-forest px-4 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                    <span class="iconify" data-icon="mdi:login-variant"></span>
+                    <span>Sign In</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Auth Content Section -->
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-10 w-full flex items-center">
+        <div class="grid lg:grid-cols-12 gap-12 items-center w-full">
+            
+            <!-- Left Column: Value Proposition & Ecosystem Benefits -->
+            <div class="hidden lg:flex lg:col-span-5 flex-col justify-center space-y-8 pr-4">
+                
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-forest/10 border border-forest/30 text-forest text-xs font-semibold w-max">
+                    <span class="iconify text-base" data-icon="mdi:seed-outline"></span>
+                    <span>Start Mechanized Farming in 3 Easy Steps</span>
+                </div>
+
+                <!-- Main Pitch -->
+                <div class="space-y-3">
+                    <h1 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-tight">
+                        Join India's Fastest <br/>
+                        <span class="bg-gradient-to-r from-accent via-wheat to-forest bg-clip-text text-transparent">Agri Machinery</span> Network
+                    </h1>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Rent modern tractors when you need them, or list your equipment to earn steady income during downtime. No intermediaries, no inflated commissions.
+                    </p>
+                </div>
+
+                <!-- Split Ecosystem Cards -->
+                <div class="space-y-3">
+                    <div class="auth-glass-card rounded-2xl p-4 border border-forest/20 flex gap-3.5 items-start">
+                        <div class="w-10 h-10 rounded-xl bg-forest/20 text-forest flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="iconify text-2xl" data-icon="mdi:sprout"></span>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">For Farmers & Cultivators</h3>
+                            <p class="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                                Access 45 to 120 HP tractors, rotavators, and harvesters. Pay only for the hours or acres you cultivate.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="auth-glass-card rounded-2xl p-4 border border-accent/20 flex gap-3.5 items-start">
+                        <div class="w-10 h-10 rounded-xl bg-accent/20 text-accent flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="iconify text-2xl" data-icon="mdi:cash-multiple"></span>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">For Tractor & Fleet Owners</h3>
+                            <p class="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                                Earn up to ₹85,000 every month by listing idle tractors. Every trip is insured with guaranteed payments.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Ecosystem Stats -->
+                <div class="grid grid-cols-3 gap-3 pt-2">
+                    <div class="glass rounded-xl p-3 text-center">
+                        <div class="text-xl font-extrabold text-accent">500+</div>
+                        <div class="text-[11px] text-gray-400">Tractors Ready</div>
+                    </div>
+                    <div class="glass rounded-xl p-3 text-center">
+                        <div class="text-xl font-extrabold text-forest">50+</div>
+                        <div class="text-[11px] text-gray-400">Districts</div>
+                    </div>
+                    <div class="glass rounded-xl p-3 text-center">
+                        <div class="text-xl font-extrabold text-wheat">₹0</div>
+                        <div class="text-[11px] text-gray-400">Joining Fee</div>
+                    </div>
+                </div>
+
+                <!-- Certified Partners -->
+                <div class="pt-2">
+                    <p class="text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-2">Supported Machinery Brands</p>
+                    <div class="flex items-center gap-4 text-xs font-semibold text-gray-400">
+                        <span class="px-2.5 py-1 rounded bg-dark-900 border border-primaryLight/20 text-gray-300">Mahindra</span>
+                        <span class="px-2.5 py-1 rounded bg-dark-900 border border-primaryLight/20 text-gray-300">John Deere</span>
+                        <span class="px-2.5 py-1 rounded bg-dark-900 border border-primaryLight/20 text-gray-300">Swaraj</span>
+                        <span class="px-2.5 py-1 rounded bg-dark-900 border border-primaryLight/20 text-gray-300">Kubota</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Registration Card -->
+            <div class="col-span-12 lg:col-span-7 max-w-2xl mx-auto w-full">
+                <div class="auth-glass rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+                    
+                    <!-- Decorative Glow -->
+                    <div class="absolute -top-12 -left-12 w-32 h-32 bg-forest/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <!-- Card Header & Sample Autofill -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white tracking-tight">Create Free Account</h2>
+                            <p class="text-xs text-gray-400 mt-0.5">Fill in your agricultural profile to start renting or listing.</p>
+                        </div>
+                        <button type="button" onclick="fillSampleSignupData()" class="demo-badge px-3 py-1.5 rounded-xl text-xs font-semibold text-accent inline-flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
+                            <span class="iconify" data-icon="mdi:magic-staff"></span>
+                            <span>⚡ Fill Sample Data</span>
+                        </button>
+                    </div>
+
+                    <!-- Role Selector (3-part segmented radio card) -->
+                    <div class="mb-5">
+                        <label class="auth-label">Select Your Primary Account Type: <span class="required">*</span></label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            
+                            <div class="role-card active p-3 rounded-2xl flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2" data-role="Farmer" onclick="selectSignupRole(this, 'Farmer')">
+                                <div class="flex items-center sm:flex-col gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-forest/20 text-forest flex items-center justify-center shrink-0">
+                                        <span class="iconify text-lg" data-icon="mdi:sprout"></span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Farmer / Renter</div>
+                                        <div class="text-[10px] text-gray-400">I need equipment</div>
+                                    </div>
+                                </div>
+                                <div class="role-radio shrink-0 sm:mt-1"></div>
+                            </div>
+
+                            <div class="role-card p-3 rounded-2xl flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2" data-role="Machine Owner" onclick="selectSignupRole(this, 'Machine Owner')">
+                                <div class="flex items-center sm:flex-col gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-accent/20 text-accent flex items-center justify-center shrink-0">
+                                        <span class="iconify text-lg" data-icon="mdi:tractor"></span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Machine Owner</div>
+                                        <div class="text-[10px] text-gray-400">I own tractors</div>
+                                    </div>
+                                </div>
+                                <div class="role-radio shrink-0 sm:mt-1"></div>
+                            </div>
+
+                            <div class="role-card p-3 rounded-2xl flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2" data-role="Driver/Operator" onclick="selectSignupRole(this, 'Driver/Operator')">
+                                <div class="flex items-center sm:flex-col gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-leaf/20 text-leaf flex items-center justify-center shrink-0">
+                                        <span class="iconify text-lg" data-icon="mdi:steering"></span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Driver / Operator</div>
+                                        <div class="text-[10px] text-gray-400">I operate machinery</div>
+                                    </div>
+                                </div>
+                                <div class="role-radio shrink-0 sm:mt-1"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <form id="signup-form" onsubmit="handleSignupSubmit(event)" class="space-y-4">
+                        
+                        <!-- Row 1: Full Name & Mobile -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="signup-fullname" class="auth-label">Full Name <span class="required">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                        <span class="iconify text-lg" data-icon="mdi:account-outline"></span>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        id="signup-fullname" 
+                                        required 
+                                        placeholder="e.g. Ramesh Kumar Patel"
+                                        class="auth-glass-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-gray-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="signup-phone" class="auth-label">Mobile Number <span class="required">*</span></label>
+                                <div class="relative flex">
+                                    <div class="w-14 px-2 py-2.5 rounded-l-xl auth-glass-input text-center text-xs font-bold text-gray-300 flex items-center justify-center border-r-0 shrink-0">
+                                        +91
+                                    </div>
+                                    <input 
+                                        type="tel" 
+                                        id="signup-phone" 
+                                        required 
+                                        maxlength="10"
+                                        pattern="[0-9]{10}"
+                                        placeholder="98765 43210"
+                                        class="auth-glass-input w-full pl-3 pr-4 py-2.5 rounded-r-xl text-sm placeholder-gray-500 font-mono"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Email & District/Location -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="signup-email" class="auth-label">Email Address <span class="text-gray-500 text-[10px]">(Optional)</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                        <span class="iconify text-lg" data-icon="mdi:email-outline"></span>
+                                    </div>
+                                    <input 
+                                        type="email" 
+                                        id="signup-email" 
+                                        placeholder="farmer@example.com"
+                                        class="auth-glass-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-gray-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="signup-district" class="auth-label">Farming District <span class="required">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                        <span class="iconify text-lg" data-icon="mdi:map-marker-outline"></span>
+                                    </div>
+                                    <select 
+                                        id="signup-district" 
+                                        required 
+                                        class="auth-glass-input w-full pl-10 pr-8 py-2.5 rounded-xl text-sm bg-dark-900 text-white cursor-pointer"
+                                    >
+                                        <option value="" class="bg-dark-900 text-gray-400">Select your district</option>
+                                        <option value="Karnal, Haryana" class="bg-dark-900">Karnal, Haryana</option>
+                                        <option value="Panipat, Haryana" class="bg-dark-900">Panipat, Haryana</option>
+                                        <option value="Kurukshetra, Haryana" class="bg-dark-900">Kurukshetra, Haryana</option>
+                                        <option value="Ludhiana, Punjab" class="bg-dark-900">Ludhiana, Punjab</option>
+                                        <option value="Amritsar, Punjab" class="bg-dark-900">Amritsar, Punjab</option>
+                                        <option value="Meerut, Uttar Pradesh" class="bg-dark-900">Meerut, Uttar Pradesh</option>
+                                        <option value="Muzaffarnagar, Uttar Pradesh" class="bg-dark-900">Muzaffarnagar, Uttar Pradesh</option>
+                                        <option value="Kota, Rajasthan" class="bg-dark-900">Kota, Rajasthan</option>
+                                        <option value="Indore, Madhya Pradesh" class="bg-dark-900">Indore, Madhya Pradesh</option>
+                                        <option value="Other Districts" class="bg-dark-900">Other Districts (Pan-India)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Role Specific Field -->
+                        <div id="dynamic-role-field-container">
+                            <label for="signup-detail" id="dynamic-field-label" class="auth-label">Landholding / Farm Area</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <span class="iconify text-lg" data-icon="mdi:crop"></span>
+                                </div>
+                                <select id="signup-detail" class="auth-glass-input w-full pl-10 pr-8 py-2.5 rounded-xl text-sm bg-dark-900 text-white">
+                                    <option value="1-5 Acres (Small Farm)" class="bg-dark-900">1 to 5 Acres (Small Landholding)</option>
+                                    <option value="5-15 Acres (Medium Farm)" class="bg-dark-900">5 to 15 Acres (Medium Farm)</option>
+                                    <option value="15+ Acres (Large Scale Commercial)" class="bg-dark-900">15+ Acres (Large Scale Commercial)</option>
+                                    <option value="Custom Farming Group" class="bg-dark-900">Farmer Producer Organization (FPO)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Passwords -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="signup-password" class="auth-label">Create Password <span class="required">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                        <span class="iconify text-lg" data-icon="mdi:lock-outline"></span>
+                                    </div>
+                                    <input 
+                                        type="password" 
+                                        id="signup-password" 
+                                        required 
+                                        minlength="6"
+                                        oninput="checkPasswordStrength(this.value)"
+                                        placeholder="Min. 6 characters"
+                                        class="auth-glass-input w-full pl-10 pr-10 py-2.5 rounded-xl text-sm placeholder-gray-500"
+                                    />
+                                    <button 
+                                        type="button" 
+                                        onclick="togglePasswordVisibility('signup-password', this)" 
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
+                                    >
+                                        <span class="iconify text-base" data-icon="mdi:eye-outline"></span>
+                                    </button>
+                                </div>
+                                <!-- Password Strength Meter -->
+                                <div class="mt-2">
+                                    <div class="w-full bg-dark-900 h-1.5 rounded-full overflow-hidden">
+                                        <div id="strength-bar" class="h-full w-0 transition-all duration-300"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] text-gray-400 mt-1">
+                                        <span>Strength</span>
+                                        <span id="strength-label" class="font-medium text-gray-400">Too short</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="signup-confirm-password" class="auth-label">Confirm Password <span class="required">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                        <span class="iconify text-lg" data-icon="mdi:lock-check-outline"></span>
+                                    </div>
+                                    <input 
+                                        type="password" 
+                                        id="signup-confirm-password" 
+                                        required 
+                                        minlength="6"
+                                        oninput="checkPasswordMatch()"
+                                        placeholder="Re-enter password"
+                                        class="auth-glass-input w-full pl-10 pr-10 py-2.5 rounded-xl text-sm placeholder-gray-500"
+                                    />
+                                    <button 
+                                        type="button" 
+                                        onclick="togglePasswordVisibility('signup-confirm-password', this)" 
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
+                                    >
+                                        <span class="iconify text-base" data-icon="mdi:eye-outline"></span>
+                                    </button>
+                                </div>
+                                <div id="password-match-msg" class="text-[10px] mt-2 text-transparent">Match check</div>
+                            </div>
+                        </div>
+
+                        <!-- Terms & Conditions Checkbox -->
+                        <div class="pt-1">
+                            <label class="flex items-start gap-2.5 cursor-pointer text-xs text-gray-300 select-none">
+                                <input type="checkbox" id="terms-agree" required class="w-4 h-4 rounded border-gray-600 bg-dark-900 text-forest focus:ring-forest mt-0.5">
+                                <span class="leading-relaxed">
+                                    I agree to FarmGo's <a href="index.html#terms" class="text-accent underline hover:text-accentLight">Terms of Service</a>, 
+                                    <a href="index.html#privacy" class="text-accent underline hover:text-accentLight">Privacy Policy</a>, 
+                                    and machinery rental insurance guidelines.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submit-signup-btn" class="btn-primary text-primaryDark font-bold w-full py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm">
+                            <span class="iconify text-lg" data-icon="mdi:account-check-outline"></span>
+                            <span>Create FarmGo Account</span>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="relative my-5 text-center">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-primaryLight/15"></div></div>
+                        <span class="relative px-3 bg-dark-800 text-[11px] text-gray-400 uppercase tracking-wider">Or register with</span>
+                    </div>
+
+                    <!-- Social / Fast Verification -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="handleSocialSignup('Google')" class="auth-social-btn py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold text-gray-200">
+                            <span class="iconify text-base" data-icon="logos:google-icon"></span>
+                            <span>Google Account</span>
+                        </button>
+                        <button type="button" onclick="handleSocialSignup('AgriStack / PM-Kisan ID')" class="auth-social-btn py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold text-gray-200">
+                            <span class="iconify text-forest text-base" data-icon="mdi:shield-account"></span>
+                            <span>AgriStack Aadhaar</span>
+                        </button>
+                    </div>
+
+                    <!-- Footer Link to Sign In -->
+                    <div class="mt-5 pt-4 border-t border-primaryLight/15 text-center">
+                        <p class="text-xs text-gray-400">
+                            Already have an account? 
+                            <a href="login.html" class="font-bold text-accent hover:text-accentLight ml-1 inline-flex items-center gap-0.5">
+                                Sign In
+                                <span class="iconify text-sm" data-icon="mdi:arrow-right"></span>
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Page Footer -->
+    <footer class="w-full py-6 text-center text-xs text-gray-500 border-t border-primaryLight/10 mt-12 bg-primaryDark/40">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>&copy; 2025 FarmGo Agri-Tech Network India. All rights reserved.</div>
+            <div class="flex gap-4 text-gray-400">
+                <a href="index.html" class="hover:text-accent">Home</a>
+                <a href="login.html" class="hover:text-accent">Sign In</a>
+                <a href="index.html#contact" class="hover:text-accent">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // State
+        let currentSignupRole = 'Farmer';
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icon = type === 'success' ? 'mdi:check-circle' : type === 'error' ? 'mdi:alert-circle' : 'mdi:information';
+            const color = type === 'success' ? 'text-forest' : type === 'error' ? 'text-red-400' : 'text-accent';
+            toast.className = 'toast glass rounded-xl px-5 py-4 flex items-center gap-3 min-w-[280px] shadow-2xl';
+            toast.innerHTML = `<span class="iconify ${color} text-xl" data-icon="${icon}"></span><span class="text-sm font-medium text-white">${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => { 
+                toast.classList.remove('show'); 
+                setTimeout(() => toast.remove(), 400); 
+            }, 3200);
+        }
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('.iconify');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-icon', 'mdi:eye-off-outline');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-icon', 'mdi:eye-outline');
+            }
+        }
+
+        // Role Selector
+        function selectSignupRole(element, role) {
+            document.querySelectorAll('.role-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+            currentSignupRole = role;
+
+            const label = document.getElementById('dynamic-field-label');
+            const select = document.getElementById('signup-detail');
+
+            if (role === 'Farmer') {
+                label.textContent = 'Landholding / Farm Area';
+                select.innerHTML = `
+                    <option value="1-5 Acres (Small Farm)" class="bg-dark-900">1 to 5 Acres (Small Landholding)</option>
+                    <option value="5-15 Acres (Medium Farm)" class="bg-dark-900">5 to 15 Acres (Medium Farm)</option>
+                    <option value="15+ Acres (Large Scale Commercial)" class="bg-dark-900">15+ Acres (Large Scale Commercial)</option>
+                    <option value="Custom Farming Group" class="bg-dark-900">Farmer Producer Organization (FPO)</option>
+                `;
+            } else if (role === 'Machine Owner') {
+                label.textContent = 'Machinery Fleet Size';
+                select.innerHTML = `
+                    <option value="1 Tractor" class="bg-dark-900">1 Tractor Available for Rent</option>
+                    <option value="2-4 Tractors & Implements" class="bg-dark-900">2 to 4 Tractors & Implements</option>
+                    <option value="5+ Fleet Machines" class="bg-dark-900">5+ Fleet Machines (Commercial Contractor)</option>
+                    <option value="Combine Harvester Owner" class="bg-dark-900">Harvesters / Multi-Crop Machinery</option>
+                `;
+            } else {
+                label.textContent = 'Driving & Operation Experience';
+                select.innerHTML = `
+                    <option value="2-5 Years Commercial Experience" class="bg-dark-900">2 to 5 Years Tractor Driving</option>
+                    <option value="5-10 Years Heavy Machinery" class="bg-dark-900">5 to 10 Years Heavy Machinery</option>
+                    <option value="Certified Combine Harvester Operator" class="bg-dark-900">Certified Combine Harvester Operator</option>
+                `;
+            }
+        }
+
+        // Live Password Strength Meter
+        function checkPasswordStrength(val) {
+            const bar = document.getElementById('strength-bar');
+            const label = document.getElementById('strength-label');
+
+            if (!val || val.length === 0) {
+                bar.style.width = '0%';
+                label.textContent = 'Too short';
+                label.className = 'font-medium text-gray-400';
+                return;
+            }
+
+            let score = 0;
+            if (val.length >= 6) score++;
+            if (val.length >= 9) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            if (score <= 1) {
+                bar.style.width = '30%';
+                bar.className = 'h-full transition-all duration-300 bg-red-500';
+                label.textContent = 'Weak';
+                label.className = 'font-medium text-red-400';
+            } else if (score <= 3) {
+                bar.style.width = '65%';
+                bar.className = 'h-full transition-all duration-300 bg-amber-400';
+                label.textContent = 'Good';
+                label.className = 'font-medium text-amber-400';
+            } else {
+                bar.style.width = '100%';
+                bar.className = 'h-full transition-all duration-300 bg-emerald-400';
+                label.textContent = 'Strong';
+                label.className = 'font-medium text-emerald-400';
+            }
+        }
+
+        // Live Password Match Check
+        function checkPasswordMatch() {
+            const p1 = document.getElementById('signup-password').value;
+            const p2 = document.getElementById('signup-confirm-password').value;
+            const msg = document.getElementById('password-match-msg');
+
+            if (!p2) {
+                msg.textContent = '';
+                return;
+            }
+
+            if (p1 === p2) {
+                msg.textContent = '✓ Passwords match';
+                msg.className = 'text-[10px] mt-2 text-forest font-medium';
+            } else {
+                msg.textContent = '✕ Passwords do not match';
+                msg.className = 'text-[10px] mt-2 text-red-400 font-medium';
+            }
+        }
+
+        // Autofill sample data helper for instant verification
+        function fillSampleSignupData() {
+            document.getElementById('signup-fullname').value = 'Kuldeep Singh Mann';
+            document.getElementById('signup-phone').value = '9876512340';
+            document.getElementById('signup-email').value = 'kuldeep.mann@farmgo.in';
+            document.getElementById('signup-district').value = 'Karnal, Haryana';
+            document.getElementById('signup-password').value = 'FarmGo@2025';
+            document.getElementById('signup-confirm-password').value = 'FarmGo@2025';
+            document.getElementById('terms-agree').checked = true;
+            checkPasswordStrength('FarmGo@2025');
+            checkPasswordMatch();
+            showToast('Sample registration data populated!', 'info');
+        }
+
+        // Form Submit
+        function handleSignupSubmit(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('signup-fullname').value.trim();
+            const phone = document.getElementById('signup-phone').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const district = document.getElementById('signup-district').value;
+            const detail = document.getElementById('signup-detail').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const termsAgree = document.getElementById('terms-agree').checked;
+
+            if (!termsAgree) {
+                showToast('Please agree to the Terms of Service to proceed', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match. Please verify.', 'error');
+                return;
+            }
+
+            if (phone.length < 10) {
+                showToast('Please enter a valid 10-digit mobile number', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('submit-signup-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="iconify animate-spin text-lg" data-icon="mdi:loading"></span><span>Creating Account...</span>`;
+
+            setTimeout(() => {
+                const userData = {
+                    name: fullName,
+                    phone: `+91 ${phone}`,
+                    email: email || `${phone}@farmgo.in`,
+                    role: currentSignupRole,
+                    district: district,
+                    detail: detail,
+                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+                    token: 'farmgo_token_' + Date.now(),
+                    registeredAt: new Date().toISOString()
+                };
+
+                localStorage.setItem('farmgo_user', JSON.stringify(userData));
+                showToast(`Welcome to FarmGo, ${fullName}! Account created.`, 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1100);
+            }, 800);
+        }
+
+        function handleSocialSignup(provider) {
+            showToast(`Connecting with ${provider}...`, 'info');
+            setTimeout(() => {
+                const userData = {
+                    name: 'Kuldeep Singh Mann',
+                    email: 'kuldeep.mann@gmail.com',
+                    phone: '+91 98765 12340',
+                    role: currentSignupRole,
+                    district: 'Karnal, Haryana',
+                    avatar: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=120&auto=format&fit=crop&q=80',
+                    provider: provider,
+                    token: 'farmgo_social_' + Date.now(),
+                    registeredAt: new Date().toISOString()
+                };
+                localStorage.setItem('farmgo_user', JSON.stringify(userData));
+                showToast(`Signed up via ${provider}! Redirecting...`, 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 800);
+        }
+    </script>
+</body>
+</html>
